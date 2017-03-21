@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/image_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--This is the ImageView which will contain the poster image-->
+    <!--The height of this view is actually programmatically adjusted
+    in the PosterAdapter class-->
+    <ImageView
+        android:id="@+id/img_poster"
+        android:layout_width="match_parent"
+        android:layout_height="305dp"
+        android:contentDescription="@string/content_descr_poster_image"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/detail_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/colorDetailButtonTransparent"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:text="@string/poster_detail_button"
+        android:textColor="@color/colorWhiteText"
+        android:textSize="18sp"
+        android:visibility="invisible"/>
+
+</RelativeLayout>

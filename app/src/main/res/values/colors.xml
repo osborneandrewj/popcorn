@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#212121</color>
+    <color name="colorPrimaryDark">#c62828</color>
+    <color name="colorAccent">#d32f2f</color>
+
+    <color name="colorWhiteText">#ffffff</color>
+
+    <!--A slightly transparent color for the detail button-->
+    <color name="colorDetailButtonTransparent">#E1c62828</color>
+    <color name="colorPosterBackground">#000000</color>
+</resources>
