@@ -10,5 +10,6 @@ You must include a The Movie DB API key during the build process.
 You may obtain a key at the The Movie DB website found [here](https://developers.themoviedb.org/3/getting-started).
 
 Include your API key by adding this line to [USER_HOME]/.gradle/gradle.properties
-
-'MyTheMovieDBApiToken="<YOUR_API_KEY>'
+'''
+MyTheMovieDBApiToken="<YOUR_API_KEY>
+'''
