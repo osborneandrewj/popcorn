@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,13 +56,10 @@ import java.util.ArrayList;
 
 public class PostersActivity extends AppCompatActivity implements PosterAdapter.PosterAdapterOnClickHandler {
 
-    /** Used for logging errors */
     private static final String LOG_TAG = PostersActivity.class.getSimpleName();
-    /** Adapter for the list of movie posters */
+    private static final String DEFAULT_SORT_ORDER = "0";
     private PosterAdapter mPosterAdapter;
-    /** RecyclerView used to display movie posters */
     private RecyclerView mRecyclerView;
-    /** Empty State TextView */
     private TextView mEmptyStateTextView;
 
     /**
@@ -271,7 +269,13 @@ public class PostersActivity extends AppCompatActivity implements PosterAdapter.
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String sortOrderKey = getString(R.string.settings_sort_order_key);
         String sortOrderDefault = getString(R.string.settings_sort_order_default);
-        String sortOrder = sharedPref.getString(sortOrderKey, sortOrderDefault);
+        String sortOrder = "";
+        if (sharedPref.getString(sortOrderKey, sortOrderDefault) != null
+                && !TextUtils.isEmpty(sharedPref.getString(sortOrderKey, sortOrderDefault))) {
+            sortOrder = sharedPref.getString(sortOrderKey, sortOrderDefault);
+        } else {
+            sortOrder = DEFAULT_SORT_ORDER;
+        }
 
         Log.v(LOG_TAG, "sortOrder = " + sortOrder);
         return sortOrder;
