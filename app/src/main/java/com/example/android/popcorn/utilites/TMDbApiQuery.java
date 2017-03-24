@@ -6,6 +6,8 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.example.android.popcorn.BuildConfig;
 import com.example.android.popcorn.Movie;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,12 +33,8 @@ import java.util.ArrayList;
 public class TMDbApiQuery {
 
     private static final String LOG_TAG = TMDbApiQuery.class.getSimpleName();
-    /** Used to determine sort order */
     private static final int SORT_BY_POPULARITY = 0;
     private static final int SORT_BY_RATING = 1;
-    /** API key used to query database. */
-    // TODO: Enter your valid API key from: https://www.themoviedb.org/documentation/api
-    private static final String API_KEY = "";
 
     /**
      * Private constructor as you never need to create a TMDbApiQuery object
@@ -91,7 +89,7 @@ public class TMDbApiQuery {
         uriBuilder.authority("api.themoviedb.org");
         uriBuilder.appendPath("3");
         uriBuilder.appendPath("movie");
-        uriBuilder.appendQueryParameter("api_key", API_KEY);
+        uriBuilder.appendQueryParameter("api_key", BuildConfig.THE_MOVIE_DB_API_KEY);
         uriBuilder.appendQueryParameter("language", "en-US");
         uriBuilder.appendQueryParameter("page", "1");
 
