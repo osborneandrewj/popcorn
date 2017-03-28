@@ -1,6 +1,7 @@
 package com.example.android.popcorn;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 /**
@@ -17,7 +20,7 @@ import java.util.ArrayList;
  *
  */
 
-public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdapterViewHolder>{
+public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdapterViewHolder> {
 
     private static final String LOG_TAG = PosterAdapter.class.getSimpleName();
 
@@ -35,6 +38,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     public interface PosterAdapterOnClickHandler {
         // Clicks to general poster image
         void onClick(View view, TextView aDetailTextView, String aMovieTitle);
+
         // Clicks to detail button
         void onDetailButtonClick(TextView aDetailTextView, String aMovieTitle, Uri aPosterUri,
                                  Uri aBackdropUri, String aSynopsis, String aReleaseYear,
@@ -44,8 +48,8 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     /**
      * Creates a PosterAdapter and passing data into it
      *
-     * @param context The context of the containing activity.
-     * @param aList A list of Movie objects to display.
+     * @param context      The context of the containing activity.
+     * @param aList        A list of Movie objects to display.
      * @param clickHandler The on-click handler that is called when a poster image is clicked.
      */
     public PosterAdapter(Context context, ArrayList<Movie> aList,
@@ -69,14 +73,24 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         View view = mInflater.inflate(R.layout.poster_item, parent, false);
         final PosterAdapterViewHolder viewHolder = new PosterAdapterViewHolder(view);
 
-        // Make each poster take up half the size of the screen
-        // This is accomplished by measuring the LinearLayout containing the ImageView and
-        // dividing that by half
-        if (mHeight == 0) {
+        if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // Make each poster take up half the size of the screen
+            // This is accomplished by measuring the LinearLayout containing the ImageView and
+            // dividing that by half
             parent.post(new Runnable() {
                 @Override
                 public void run() {
                     mHeight = parent.getMeasuredHeight() / 2;
+                    View view = viewHolder.mContainer;
+                    view.getLayoutParams().height = mHeight;
+                }
+            });
+        } else {
+            // Make each poster take up the entire screen
+            parent.post(new Runnable() {
+                @Override
+                public void run() {
+                    mHeight = parent.getMeasuredHeight();
                     View view = viewHolder.mContainer;
                     view.getLayoutParams().height = mHeight;
                 }
@@ -114,7 +128,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     /**
      * Inner class to store and recycle views as they are scrolled off screen
      */
-    public class PosterAdapterViewHolder extends RecyclerView.ViewHolder  implements
+    public class PosterAdapterViewHolder extends RecyclerView.ViewHolder implements
             View.OnClickListener {
 
         public ImageView mPosterImage;
@@ -123,9 +137,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
         public PosterAdapterViewHolder(View view) {
             super(view);
-            mPosterImage = (ImageView)view.findViewById(R.id.img_poster);
-            mContainer = (RelativeLayout)view.findViewById(R.id.image_container);
-            mDetailTextView = (TextView)view.findViewById(R.id.detail_text_view);
+            mPosterImage = (ImageView) view.findViewById(R.id.img_poster);
+            mContainer = (RelativeLayout) view.findViewById(R.id.image_container);
+            mDetailTextView = (TextView) view.findViewById(R.id.detail_text_view);
             view.setOnClickListener(this);
             mDetailTextView.setOnClickListener(this);
         }

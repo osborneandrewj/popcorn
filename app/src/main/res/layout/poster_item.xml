@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/img_poster"
         android:layout_width="match_parent"
-        android:layout_height="305dp"
+        android:layout_height="match_parent"
         android:contentDescription="@string/content_descr_poster_image"
         android:scaleType="centerCrop" />
 

@@ -28,7 +28,7 @@ public class Movie {
      *
      * @param aTitle The title of the movie.
      * @param aPosterPath The path of the poster image. This is used to display the posters in the
-     *                    gridview of the PostersActivity.
+     *                    gridview of the MainActivity.
      *                    Example: "/45Y1G5FEgttPAwjTYic6czC9xCn.jpg"
      * @param aBackdropPath The path of the backdrop image. Similar to the poster image path above.
      * @param aMovieSynopsis The overview of the movie.

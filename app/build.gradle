@@ -16,10 +16,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+        buildTypes.each {
+            it.buildConfigField 'String', 'THE_MOVIE_DB_API_KEY', MyTheMovieDBApiToken
+        }
     }
-    buildTypes.each {
-        it.buildConfigField 'String', 'THE_MOVIE_DB_API_KEY', MyTheMovieDBApiToken
-    }
+
 }
 
 repositories {
@@ -32,7 +34,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:recyclerview-v7:25.2.0'
     compile 'com.android.support:support-v4:25.2.0'

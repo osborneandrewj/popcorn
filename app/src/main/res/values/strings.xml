@@ -7,7 +7,7 @@
     <!--Poster image detail button text-->
     <string name="poster_detail_button">More details</string>
 
-    <!--Menu items displayed in PostersActivity-->
+    <!--Menu items displayed in MainActivity-->
     <string name="settings_menu_item">Settings</string>
 
     <!--Settings menu options-->
@@ -32,4 +32,7 @@
     <string name="settings_sort_order_default">0</string>
 
     <string name="empty_state_text">Oops, no internet! Check network settings.</string>
+
+    <!--Error messages-->
+    <string name="error_request_queue_init">RequestQueue has not been initialized!</string>
 </resources>

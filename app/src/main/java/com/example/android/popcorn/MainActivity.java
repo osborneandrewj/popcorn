@@ -2,6 +2,7 @@ package com.example.android.popcorn;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
@@ -19,7 +20,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
-import com.example.android.popcorn.utilites.MovieResultsLoader;
+import com.example.android.popcorn.loaders.MovieResultsLoader;
 import java.util.ArrayList;
 
 /**
@@ -54,13 +55,17 @@ import java.util.ArrayList;
  *                  *----------------------*----------------------*
  */
 
-public class PostersActivity extends AppCompatActivity implements PosterAdapter.PosterAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity implements PosterAdapter.PosterAdapterOnClickHandler {
 
-    private static final String LOG_TAG = PostersActivity.class.getSimpleName();
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String DEFAULT_SORT_ORDER = "0";
+    private static final int TWO_POSTERS_WIDE = 2;
+    private static final int THREE_POSTERS_WIDE = 3;
+
     private PosterAdapter mPosterAdapter;
     private RecyclerView mRecyclerView;
     private TextView mEmptyStateTextView;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     /**
      *  Used to load data from the www.TMDb.com server
@@ -113,7 +118,12 @@ public class PostersActivity extends AppCompatActivity implements PosterAdapter.
         mRecyclerView.setHasFixedSize(true);
 
         // Use GridLayoutManger to display the grid of movie posters
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
+        if (this.getResources().getConfiguration()
+                .orientation == Configuration.ORIENTATION_PORTRAIT) {
+            mLayoutManager = new GridLayoutManager(this, TWO_POSTERS_WIDE);
+        } else {
+            mLayoutManager = new GridLayoutManager(this, THREE_POSTERS_WIDE);
+        }
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // Specify the adapter with empty ArrayList
@@ -143,6 +153,17 @@ public class PostersActivity extends AppCompatActivity implements PosterAdapter.
     private void showEmptyState() {
         mRecyclerView.setVisibility(View.INVISIBLE);
         mEmptyStateTextView.setVisibility(View.VISIBLE);
+    }
+
+
+    /**
+     * Overriding this method ensures that the poster dimensions are refreshed from the
+     * PosterAdapter class
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPosterAdapter.notifyDataSetChanged();
     }
 
     /**

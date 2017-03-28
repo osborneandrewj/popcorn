@@ -9,6 +9,8 @@ import android.util.Log;
 
 import com.example.android.popcorn.BuildConfig;
 import com.example.android.popcorn.Movie;
+import com.example.android.popcorn.json.JSONExtraction;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,21 +35,19 @@ import java.util.ArrayList;
 public class TMDbApiQuery {
 
     private static final String LOG_TAG = TMDbApiQuery.class.getSimpleName();
-    private static final int SORT_BY_POPULARITY = 0;
-    private static final int SORT_BY_RATING = 1;
 
     /**
      * Private constructor as you never need to create a TMDbApiQuery object
      */
     private TMDbApiQuery() {}
 
-    public static ArrayList<Movie> fetchMovieData(String aSortOrder) {
+    public static ArrayList<Movie> fetchMovieData(Uri aUri) {
 
         Log.v(LOG_TAG, "Fetching data! ");
 
         String response = "";
         try {
-            response = makeHttpRequest(createQueryUrl(aSortOrder));
+            response = makeHttpRequest(aUri);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,68 +55,19 @@ public class TMDbApiQuery {
         ArrayList<Movie> movieArrayList = null;
 
         if (!TextUtils.isEmpty(response)) {
-            movieArrayList = extractFromJson(response);
+            movieArrayList = JSONExtraction.extractFromJson(response);
         }
 
         return movieArrayList;
     }
 
     /**
-     * Check for internet connection.
-     *
-     * @param context The context.
-     * @return The boolean "true" if internet connection exists.
-     */
-    public static boolean doesNetworkConnectionExist(Context context) {
-        ConnectivityManager cm =
-                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-        return isConnected;
-    }
-
-    /**
-     * Create the URL to be used by the HTTP request method
-     *
-     * @return
-     */
-    public static Uri createQueryUrl(String aSortOrder) {
-
-        Uri.Builder uriBuilder = new Uri.Builder();
-        uriBuilder.scheme("https");
-        uriBuilder.authority("api.themoviedb.org");
-        uriBuilder.appendPath("3");
-        uriBuilder.appendPath("movie");
-        uriBuilder.appendQueryParameter("api_key", BuildConfig.THE_MOVIE_DB_API_KEY);
-        uriBuilder.appendQueryParameter("language", "en-US");
-        uriBuilder.appendQueryParameter("page", "1");
-
-        switch (Integer.valueOf(aSortOrder)) {
-            case SORT_BY_POPULARITY:
-                uriBuilder.appendPath("popular");
-                break;
-            case SORT_BY_RATING:
-                uriBuilder.appendPath("top_rated");
-                break;
-            default:
-                uriBuilder.appendPath("popular");
-                break;
-        }
-
-
-        Log.v(LOG_TAG, "Uri: " + uriBuilder);
-        return uriBuilder.build();
-    }
-
-    /**
      * Grab the information from the TMDb database and return it in JSON format
      *
-     * @param uri The URI used to perform the search.
+     * @param aUri The URI used to perform the search.
      * @return The information formatted in JSON.
      */
-    private static String makeHttpRequest(Uri uri) throws IOException {
+    private static String makeHttpRequest(Uri aUri) throws IOException {
         String jsonResponse = "";
         URL url = null;
 
@@ -125,7 +76,7 @@ public class TMDbApiQuery {
 
         // Generate the search URL from the URI provided
         try {
-            url = new URL(uri.toString());
+            url = new URL(aUri.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -183,77 +134,4 @@ public class TMDbApiQuery {
         return output.toString();
     }
 
-    /**
-     * This method parses the JSON for the appropriate data and returns an array of Movie
-     * Objects.
-     *
-     * @param aJsonResponse The JSON data from the server.
-     * @return The JSON parsed for information and formatted as an array of Movie objects.
-     */
-    private static ArrayList<Movie> extractFromJson(String aJsonResponse) {
-        // Exit the method early if no results are provided
-        if (TextUtils.isEmpty(aJsonResponse)) {
-            return null;
-        }
-
-        // Create list to which the results will be added
-        ArrayList<Movie> movieArrayList = new ArrayList<>();
-
-        // Attempt to parse the JSON from the data
-        try {
-            JSONObject baseJsonObject = new JSONObject(aJsonResponse);
-            JSONArray baseJsonArray = baseJsonObject.getJSONArray("results");
-
-            // For each item in array...
-            for (int i=0;i<baseJsonArray.length();i++) {
-                JSONObject currentMovie = baseJsonArray.getJSONObject(i);
-
-                String movieTitle = "";
-                if (currentMovie.has("title")) {
-                    movieTitle = currentMovie.getString("title");
-                }
-
-                String posterPath = "";
-                if (currentMovie.has("poster_path")) {
-                    posterPath = currentMovie.getString("poster_path");
-                }
-
-                String backdropPath = "";
-                if (currentMovie.has("backdrop_path")) {
-                    backdropPath = currentMovie.getString("backdrop_path");
-                }
-
-                String synopsis = "";
-                if (currentMovie.has("overview")) {
-                    synopsis = currentMovie.getString("overview");
-                }
-
-                String releaseDate = "";
-                if (currentMovie.has("release_date")) {
-                    releaseDate = currentMovie.getString("release_date");
-                }
-
-                long voteAverage = 0;
-                if (currentMovie.has("vote_average")) {
-                    voteAverage = currentMovie.getLong("vote_average");
-                }
-
-                // Now create a new Movie object
-                Movie aMovie = new Movie(
-                        movieTitle,
-                        posterPath,
-                        backdropPath,
-                        synopsis,
-                        releaseDate,
-                        voteAverage);
-                // Then add this object to the array
-                movieArrayList.add(aMovie);
-                Log.v(LOG_TAG, "Movie added: " + movieTitle + " " + posterPath);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return movieArrayList;
-    }
 }
