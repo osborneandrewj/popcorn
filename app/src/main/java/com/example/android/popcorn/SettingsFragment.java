@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,21 +18,7 @@ import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingsFragment extends PreferenceFragment {
-
-
-    public SettingsFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-
-        // Load the preferences from the settings XML resource file
-        addPreferencesFromResource(R.xml.preferences);
-    }
+public class SettingsFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -50,7 +37,9 @@ public class SettingsFragment extends PreferenceFragment {
         }
     }
 
-
-
-
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        // Add preferences
+        addPreferencesFromResource(R.xml.preferences);
+    }
 }

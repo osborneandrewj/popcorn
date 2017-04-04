@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
     private RecyclerView mRecyclerView;
     private TextView mEmptyStateTextView;
     private RecyclerView.LayoutManager mLayoutManager;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     /**
      *  Used to load data from the www.TMDb.com server
@@ -99,8 +100,6 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
 
         }
     };
-    
-    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,10 +113,11 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         mEmptyStateTextView = (TextView)findViewById(R.id.tv_empty_state);
         hideEmptyState();
 
-        // To improve performance
+        // To improve performance...
         mRecyclerView.setHasFixedSize(true);
 
         // Use GridLayoutManger to display the grid of movie posters
+        // Note: in landscape mode, there will be three columns, not two
         if (this.getResources().getConfiguration()
                 .orientation == Configuration.ORIENTATION_PORTRAIT) {
             mLayoutManager = new GridLayoutManager(this, TWO_POSTERS_WIDE);
@@ -237,39 +237,11 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         int id = item.getItemId();
         switch (id) {
             case R.id.action_settings:
-                // The user clicked the settings menu option. Open the SettingsFragment
-                getFragmentManager().beginTransaction()
-                        .replace(android.R.id.content, new SettingsFragment())
-                        // .addToBackStack() required for back navigation in onBackPressed()
-                        .addToBackStack(null)
-                        .commit();
+                Intent openSettingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(openSettingsIntent);
+                return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Method to handle back button clicks from SettingsFragment
-     *
-     * This is from:
-     * http://stackoverflow.com/questions/5448653/how-to-implement-onbackpressed-in-fragments
-     *
-     * Note: This solution requires that SettingsFragment implement .addToBackStack() before any
-     * transaction commits
-     */
-    @Override
-    public void onBackPressed() {
-        int count = getFragmentManager().getBackStackEntryCount();
-        if (count == 0) {
-            // The fragment it not open. Handle back button normally
-            super.onBackPressed();
-        } else {
-            // The fragment is open. Remove fragment.
-            getFragmentManager().popBackStack();
-
-            // Restart the loader
-            getSupportLoaderManager().restartLoader(1, null, mLoaderCallbacks);
-
-        }
     }
 
     /**
@@ -291,8 +263,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         String sortOrderKey = getString(R.string.settings_sort_order_key);
         String sortOrderDefault = getString(R.string.settings_sort_order_default);
         String sortOrder = "";
-        if (sharedPref.getString(sortOrderKey, sortOrderDefault) != null
-                && !TextUtils.isEmpty(sharedPref.getString(sortOrderKey, sortOrderDefault))) {
+        if (!TextUtils.isEmpty(sharedPref.getString(sortOrderKey, sortOrderDefault))) {
             sortOrder = sharedPref.getString(sortOrderKey, sortOrderDefault);
         } else {
             sortOrder = DEFAULT_SORT_ORDER;

@@ -1,4 +1,9 @@
 <resources>
+
+    <!-- - - - - - - - - - - - - - - - - - -->
+    <!--     Used throughout Popcorn       -->
+    <!-- - - - - - - - - - - - - - - - - - -->
+
     <string name="app_name">Popcorn</string>
 
     <!--Poster image content description-->
@@ -10,26 +15,23 @@
     <!--Menu items displayed in MainActivity-->
     <string name="settings_menu_item">Settings</string>
 
+
+    <!-- - - - - - - - - - - - - - - - - - -->
+    <!--     Used in SettingsFragment      -->
+    <!-- - - - - - - - - - - - - - - - - - -->
+
     <!--Settings menu options-->
-    <string name="settings_sort_order_key">sort_order_key</string>
+    <string name="settings_sort_order_key" translatable="false">sort_order_key</string>
     <string name="settings_sort_order">Sort Order</string>
     <string name="settings_sort_order_summary">How do you want your movies sorted?</string>
-    <!--Sort order names array-->
-    <string-array name="settings_sort_options_array">
-        <item>Show me most popular movies</item>
-        <item>Show me highest rated movies</item>
-    </string-array>
-    <!--Sort order values array-->
-
-    <string-array name="settings_sort_options_array_values">
-        <!--<item>Popularity</item>-->
-        <item>0</item>
-
-        <!--<item>Highest Rated</item>-->
-        <item>1</item>
-    </string-array>
     <!--Sort according to popularity by default-->
     <string name="settings_sort_order_default">0</string>
+
+
+
+    <!-- - - - - - - - - - - - - - - - - - -->
+    <!--         Error messages            -->
+    <!-- - - - - - - - - - - - - - - - - - -->
 
     <string name="empty_state_text">Oops, no internet! Check network settings.</string>
 
