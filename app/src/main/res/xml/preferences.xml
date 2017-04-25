@@ -5,8 +5,8 @@
     <ListPreference
         android:key="@string/settings_sort_order_key"
         android:title="@string/settings_sort_order"
-        android:entries="@array/settings_sort_options_array"
-        android:entryValues="@array/settings_sort_options_array_values"
+        android:entries="@array/pref_sort_options"
+        android:entryValues="@array/pref_sort_values"
         android:summary="@string/settings_sort_order_summary"
         android:defaultValue=""
         />
