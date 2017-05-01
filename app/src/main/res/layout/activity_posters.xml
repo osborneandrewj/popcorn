@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.android.popcorn.MainActivity">
 
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
     <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/swipe_refresh_layout">
+        android:layout_marginTop="?attr/actionBarSize">
 
         <!--A RecyclerView to display a grid of movie posters-->
         <android.support.v7.widget.RecyclerView
@@ -20,25 +36,23 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-
-
     <!--Container for empty state text and loading spinner-->
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:clickable="false"
-        android:focusable="false">
 
-        <TextView
-            android:id="@+id/tv_empty_state"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/empty_state_text"
-            android:textSize="16sp" />
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:focusable="false">
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/tv_empty_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/empty_state_text"
+                android:textSize="16sp" />
 
+        </RelativeLayout>
 
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

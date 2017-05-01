@@ -1,7 +1,7 @@
 package com.example.android.popcorn.json;
 
 import android.text.TextUtils;
-import com.example.android.popcorn.Movie;
+import com.example.android.popcorn.models.Movie;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

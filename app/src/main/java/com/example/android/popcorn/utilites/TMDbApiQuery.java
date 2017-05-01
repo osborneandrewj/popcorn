@@ -1,19 +1,12 @@
 package com.example.android.popcorn.utilites;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.example.android.popcorn.BuildConfig;
-import com.example.android.popcorn.Movie;
+import com.example.android.popcorn.models.Movie;
 import com.example.android.popcorn.json.JSONExtraction;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,6 +70,7 @@ public class TMDbApiQuery {
         // Generate the search URL from the URI provided
         try {
             url = new URL(aUri.toString());
+            Log.v(LOG_TAG, "URL: " + url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

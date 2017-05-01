@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.android.popcorn.models.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -159,15 +160,15 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
                 // The user clicked the detail button
                 mClickHandler.onDetailButtonClick(
                         mDetailTextView,
-                        currentMovie.getMovieTitle(),
+                        currentMovie.getTitle(),
                         currentMovie.getPosterUri(),
                         currentMovie.getBackdropUri(),
-                        currentMovie.getMovieSynopsis(),
+                        currentMovie.getMovieOverview(),
                         currentMovie.getReleaseYear(),
                         currentMovie.getVoteAverage());
             } else {
                 // The user clicked on the poster itself
-                mClickHandler.onClick(view, mDetailTextView, currentMovie.getMovieTitle());
+                mClickHandler.onClick(view, mDetailTextView, currentMovie.getTitle());
             }
         }
     }

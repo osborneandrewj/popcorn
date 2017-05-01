@@ -3,7 +3,7 @@ package com.example.android.popcorn.loaders;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v4.content.AsyncTaskLoader;
-import com.example.android.popcorn.Movie;
+import com.example.android.popcorn.models.Movie;
 import com.example.android.popcorn.utilites.MyNetworkUtils;
 import com.example.android.popcorn.utilites.MyQueryUriBuilders;
 import com.example.android.popcorn.utilites.TMDbApiQuery;

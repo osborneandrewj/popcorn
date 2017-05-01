@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -21,7 +22,19 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import com.example.android.popcorn.loaders.MovieResultsLoader;
+import com.example.android.popcorn.models.Movie;
+import com.example.android.popcorn.models.MoviesResults;
+import com.example.android.popcorn.retrofit.TheMovieDbAPI;
+import com.example.android.popcorn.retrofit.TheMovieDbApiClient;
+
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Display a scrollable grid of movie posters to the user. It should look something like this:
@@ -105,6 +118,10 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posters);
+
+        // Set the toolbar
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_activity);
         // Get default search settings
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -143,6 +160,34 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
 
             }
         });
+
+
+        // Test code ------------------------------------------------------------------------------>
+
+
+        TheMovieDbAPI service =
+                TheMovieDbApiClient.getClient().create(TheMovieDbAPI.class);
+
+        Call<MoviesResults> call = service.getPopularMovies(TheMovieDbAPI.API_KEY);
+        call.enqueue(new Callback<MoviesResults>() {
+            @Override
+            public void onResponse(Call<MoviesResults> call, Response<MoviesResults> response) {
+                if (response.body() != null) {
+                    List<Movie> movies = response.body().getResults();
+                    Log.d(LOG_TAG, "Number of movies received: " + movies.size());
+                    String title = movies.get(0).getTitle();
+                    Log.v(LOG_TAG, "Movie title: " + title);
+                } else {
+                    Log.v(LOG_TAG, "response is null!");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MoviesResults> call, Throwable t) {
+
+            }
+        });
+
     }
 
     private void hideEmptyState() {
@@ -204,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
      */
     @Override
     public void onDetailButtonClick(TextView aDetailTextView, String aMovieTitle, Uri aPosterUri,
-                                    Uri aBackdropUri, String aSynopsis, String aReleaseYear,
+                                    Uri aBackdropUri, String aOverview, String aReleaseYear,
                                     String aVoteAverage) {
         // The user has clicked the detail button. Slide the detail button up to hide it.
         Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.detail_button_slide_up);
@@ -217,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         extras.putString("EXTRA_MOVIE_TITLE", aMovieTitle);
         extras.putString("EXTRA_MOVIE_POSTER", aPosterUri.toString());
         extras.putString("EXTRA_MOVIE_BACKDROP", aBackdropUri.toString());
-        extras.putString("EXTRA_MOVIE_SYNOPSIS", aSynopsis);
+        extras.putString("EXTRA_MOVIE_OVERVIEW", aOverview);
         extras.putString("EXTRA_MOVIE_RELEASE_YEAR", aReleaseYear);
         extras.putString("EXTRA_MOVIE_VOTE_AVERAGE", aVoteAverage);
         intent.putExtras(extras);

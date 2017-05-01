@@ -1,10 +1,9 @@
-package com.example.android.popcorn;
+package com.example.android.popcorn.models;
 
 import android.net.Uri;
-import android.util.Log;
 
-import java.net.URI;
-import java.net.URL;
+import com.google.gson.annotations.SerializedName;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -16,10 +15,11 @@ import java.util.Locale;
 
 public class Movie {
 
-    private String mMovieTitle;
+    @SerializedName("title")
+    private String title;
     private String mPosterPath;
     private String mBackdropPath;
-    private String mMovieSynopsis;
+    private String mMovieOverview;
     private String mReleaseDate;
     private long mVoteAverage;
 
@@ -31,32 +31,36 @@ public class Movie {
      *                    gridview of the MainActivity.
      *                    Example: "/45Y1G5FEgttPAwjTYic6czC9xCn.jpg"
      * @param aBackdropPath The path of the backdrop image. Similar to the poster image path above.
-     * @param aMovieSynopsis The overview of the movie.
+     * @param aMovieOverview The overview of the movie.
      * @param aReleaseDate The date the movie was released in a YYYY-MM-DD format.
      * @param aVoteAverage The average vote in a #.# format.
      */
     public Movie(String aTitle,
                  String aPosterPath,
                  String aBackdropPath,
-                 String aMovieSynopsis,
+                 String aMovieOverview,
                  String aReleaseDate,
                  long aVoteAverage) {
 
-        mMovieTitle = aTitle;
+        title = aTitle;
         mPosterPath = aPosterPath;
         mBackdropPath = aBackdropPath;
-        mMovieSynopsis = aMovieSynopsis;
+        mMovieOverview = aMovieOverview;
         mReleaseDate = aReleaseDate;
         mVoteAverage = aVoteAverage;
 
     }
 
-    public String getMovieTitle() {
-        return mMovieTitle;
+    public String getTitle() {
+        return title;
     }
 
-    public String getMovieSynopsis() {
-        return mMovieSynopsis;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getMovieOverview() {
+        return mMovieOverview;
     }
 
     public String getVoteAverage() {
