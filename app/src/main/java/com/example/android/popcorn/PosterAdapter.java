@@ -15,6 +15,7 @@ import com.example.android.popcorn.models.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Andrew Osborne on 3/17/2017.
@@ -27,7 +28,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
     private Context mContext;
     private LayoutInflater mInflater;
-    private ArrayList<Movie> mMovieList;
+    private List<Movie> mMovieList;
     /* Used to set the height of poster images */
     private int mHeight;
     /* An on-click handler for interacting with the PosterAdapter */
@@ -58,7 +59,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      * @param aList        A list of Movie objects to display.
      * @param clickHandler The on-click handler that is called when a poster image is clicked.
      */
-    public PosterAdapter(Context context, ArrayList<Movie> aList,
+    public PosterAdapter(Context context, List<Movie> aList,
                          PosterAdapterOnClickHandler clickHandler) {
         mInflater = LayoutInflater.from(context);
         mMovieList = aList;
@@ -185,7 +186,8 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      *
      * @param aList The new list of Movie objects to display.
      */
-    public void setMoviePosterData(ArrayList<Movie> aList) {
+    public void setMoviePosterData(List<Movie> aList) {
+        mMovieList.clear();
         mMovieList = aList;
         notifyDataSetChanged();
     }

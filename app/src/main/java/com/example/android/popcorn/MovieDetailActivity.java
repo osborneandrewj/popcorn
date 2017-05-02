@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.android.popcorn.models.Movie;
 import com.example.android.popcorn.retrofit.TheMovieDbAPI;
 import com.example.android.popcorn.retrofit.TheMovieDbApiClient;
+import com.example.android.popcorn.utilites.MyNetworkUtils;
 import com.squareup.picasso.Picasso;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,6 +21,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,12 +30,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         // Get intent extras
         if (getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();
-            String movieTitle = extras.getString("EXTRA_MOVIE_TITLE");
-            String posterUrlString = extras.getString("EXTRA_MOVIE_POSTER");
+            final String posterUrlString = extras.getString("EXTRA_MOVIE_POSTER");
             String backdropUrlString = extras.getString("EXTRA_MOVIE_BACKDROP");
-            // String movieOverview = extras.getString("EXTRA_MOVIE_OVERVIEW");
-            // String releaseYear = extras.getString("EXTRA_MOVIE_RELEASE_YEAR");
-            // String voteAverage = extras.getString("EXTRA_MOVIE_VOTE_AVERAGE");
+
             int movieId = extras.getInt("EXTRA_MOVIE_ID");
 
             // Setup the toolbar and the title of the activity
@@ -42,12 +41,10 @@ public class MovieDetailActivity extends AppCompatActivity {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
             collapsingToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
-            collapsingToolbarLayout.setTitle(movieTitle);
             collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
 
             // Set the backdrop
-            ImageView backdropImage = (ImageView) findViewById(R.id.detail_movie_backdrop);
-            Picasso.with(this).load(buildUri(backdropUrlString)).into(backdropImage);
+            final ImageView backdropImage = (ImageView) findViewById(R.id.detail_movie_backdrop);
 
             // Set the poster image
             ImageView posterImage = (ImageView) findViewById(R.id.img_poster);
@@ -63,8 +60,16 @@ public class MovieDetailActivity extends AppCompatActivity {
             call.enqueue(new Callback<Movie>() {
                 @Override
                 public void onResponse(Call<Movie> call, Response<Movie> response) {
-                    Log.v("LOG TAG", "Got this: " + response.body().getTitle());
+                    Log.v("LOG TAG", "Got this: " + response.body().getBackdropPath());
                     synopsis.setText(response.body().getOverview());
+                    collapsingToolbarLayout.setTitle(response.body().getTitle());
+
+                    String backdropUrl = MyNetworkUtils.BACKDROP_BASE_URL + response.body().getBackdropPath();
+                    Picasso.with(getApplicationContext())
+                            .load(MyNetworkUtils.BACKDROP_BASE_URL + response.body().getBackdropPath())
+                            .noFade()
+                            .into(backdropImage);
+
 
                 }
 

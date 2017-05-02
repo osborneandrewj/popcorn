@@ -26,7 +26,7 @@ public class Movie {
     @SerializedName("release_date")
     private String releaseDate;
     @SerializedName("vote_average")
-    private long voteAverage;
+    private double voteAverage;
     @SerializedName("id")
     private int id;
 
@@ -49,7 +49,7 @@ public class Movie {
                  String aBackdropPath,
                  String aMovieOverview,
                  String aReleaseDate,
-                 long aVoteAverage,
+                 double aVoteAverage,
                  int aId) {
 
         title = aTitle;
@@ -151,7 +151,7 @@ public class Movie {
         this.releaseDate = releaseDate;
     }
 
-    public long getVoteAverage() {
+    public double getVoteAverage() {
         return voteAverage;
     }
 
