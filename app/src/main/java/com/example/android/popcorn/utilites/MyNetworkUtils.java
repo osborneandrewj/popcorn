@@ -11,8 +11,6 @@ import android.net.NetworkInfo;
 
 public class MyNetworkUtils {
 
-    public static final String BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w780/";
-
     private MyNetworkUtils() {
         // Never needs to be created
     }

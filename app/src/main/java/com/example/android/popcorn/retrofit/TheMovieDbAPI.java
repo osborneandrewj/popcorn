@@ -16,6 +16,10 @@ import retrofit2.http.Query;
 
 public interface TheMovieDbAPI {
 
+    // Base URLs for setting images in MovieDetailActivity
+    String BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/w780";
+    String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w185";
+
     // Get a list of top-rated movies
     @GET("movie/top_rated")
     Call<MoviesResults> getTopRatedMovies(@Query("api_key") String apiKey);

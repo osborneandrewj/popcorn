@@ -1,6 +1,5 @@
 package com.example.android.popcorn;
 
-import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import retrofit2.Response;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
+    private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
 
@@ -28,11 +28,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_details);
 
         // Get intent extras
+        // Note: If there are no extras, the error view will be shown
         if (getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();
-            final String posterUrlString = extras.getString("EXTRA_MOVIE_POSTER");
-            String backdropUrlString = extras.getString("EXTRA_MOVIE_BACKDROP");
-
             int movieId = extras.getInt("EXTRA_MOVIE_ID");
 
             // Setup the toolbar and the title of the activity
@@ -43,16 +41,10 @@ public class MovieDetailActivity extends AppCompatActivity {
             collapsingToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
             collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
 
-            // Set the backdrop
-            final ImageView backdropImage = (ImageView) findViewById(R.id.detail_movie_backdrop);
-
-            // Set the poster image
-            ImageView posterImage = (ImageView) findViewById(R.id.img_poster);
-            Picasso.with(this).load(buildUri(posterUrlString)).into(posterImage);
-
+            final ImageView backdropImageView = (ImageView) findViewById(R.id.detail_movie_backdrop);
+            final ImageView posterImage = (ImageView) findViewById(R.id.img_poster);
             final TextView synopsis = (TextView) findViewById(R.id.tv_summary);
 
-            // Test code for Retrofit
             TheMovieDbAPI service =
                     TheMovieDbApiClient.getClient().create(TheMovieDbAPI.class);
 
@@ -60,31 +52,37 @@ public class MovieDetailActivity extends AppCompatActivity {
             call.enqueue(new Callback<Movie>() {
                 @Override
                 public void onResponse(Call<Movie> call, Response<Movie> response) {
-                    Log.v("LOG TAG", "Got this: " + response.body().getBackdropPath());
+
+                    // Set various text
                     synopsis.setText(response.body().getOverview());
                     collapsingToolbarLayout.setTitle(response.body().getTitle());
 
-                    String backdropUrl = MyNetworkUtils.BACKDROP_BASE_URL + response.body().getBackdropPath();
+                    // Load the backdrop
                     Picasso.with(getApplicationContext())
-                            .load(MyNetworkUtils.BACKDROP_BASE_URL + response.body().getBackdropPath())
+                            .load(TheMovieDbAPI.BACKDROP_BASE_URL + response.body().getBackdropPath())
                             .noFade()
-                            .into(backdropImage);
+                            .into(backdropImageView);
 
-
+                    // Load the poster image
+                    Picasso.with(getApplicationContext())
+                            .load(TheMovieDbAPI.POSTER_BASE_URL + response.body().getPosterPath())
+                            .noFade()
+                            .into(posterImage);
                 }
 
                 @Override
                 public void onFailure(Call<Movie> call, Throwable t) {
-
+                    Log.e(LOG_TAG, "Retrofit failed to get information! Error: " + t);
+                    showErrorView();
                 }
             });
+        } else {
+            // Something went wrong! The intent did not have any extras.
+            showErrorView();
         }
     }
 
-    private Uri buildUri(String aUrlString) {
-        Uri uri = Uri.parse(aUrlString)
-                .buildUpon()
-                .build();
-        return uri;
+    private void showErrorView() {
+        // TODO: finish error view
     }
 }

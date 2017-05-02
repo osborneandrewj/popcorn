@@ -43,13 +43,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
         // Clicks to detail button
         void onDetailButtonClick(TextView aDetailTextView,
-                                 String aMovieTitle,
-                                 Uri aPosterUri,
-                                 Uri aBackdropUri,
-                                 String aSynopsis,
-                                 //String aReleaseYear,
-                                 String aVoteAverage,
-                                 int aId);
+                                 int aMovieId);
     }
 
     /**
@@ -161,20 +155,14 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
             int adapterPosition = getAdapterPosition();
             Movie currentMovie = mMovieList.get(adapterPosition);
 
-            // Did the user click the poster image or click the detail button?
+            // Did the user click A) the poster image or click B) the detail button?
             if (view == mDetailTextView) {
-                // The user clicked the detail button
+                // B) The user clicked the detail button
                 mClickHandler.onDetailButtonClick(
                         mDetailTextView,
-                        currentMovie.getTitle(),
-                        currentMovie.getPosterUri(),
-                        currentMovie.getBackdropUri(),
-                        currentMovie.getOverview(),
-                        //currentMovie.getReleaseDate(),
-                        String.valueOf(currentMovie.getVoteAverage()),
                         currentMovie.getId());
             } else {
-                // The user clicked on the poster itself
+                // A) The user clicked on the poster itself
                 mClickHandler.onClick(view, mDetailTextView, currentMovie.getTitle());
             }
         }
@@ -187,7 +175,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      * @param aList The new list of Movie objects to display.
      */
     public void setMoviePosterData(List<Movie> aList) {
-        mMovieList.clear();
         mMovieList = aList;
         notifyDataSetChanged();
     }

@@ -1,13 +1,9 @@
 package com.example.android.popcorn;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,21 +18,17 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
-
-import com.example.android.popcorn.loaders.MovieResultsLoader;
 import com.example.android.popcorn.models.Movie;
 import com.example.android.popcorn.models.MoviesResults;
 import com.example.android.popcorn.retrofit.TheMovieDbAPI;
 import com.example.android.popcorn.retrofit.TheMovieDbApiClient;
+import com.example.android.popcorn.utilites.MyNetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Display a scrollable grid of movie posters to the user. It should look something like this:
@@ -73,9 +65,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements PosterAdapter.PosterAdapterOnClickHandler {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    private static final String DEFAULT_SORT_ORDER = "0";
-    private static final String SORT_BY_POPULARITY = "1";
-    private static final String SORT_BY_TOP_RATED = "2";
+    private static final String DEFAULT_SORT_ORDER = "100";
+    private static final String SORT_BY_POPULARITY = "100";
+    private static final String SORT_BY_TOP_RATED = "200";
 
     private static final int TWO_POSTERS_WIDE = 2;
     private static final int THREE_POSTERS_WIDE = 3;
@@ -128,16 +120,24 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Refresh the loader
-                //getSupportLoaderManager().restartLoader(1, null, mLoaderCallbacks);
-                getMovieData();
+                // Refresh the loader if the network exists
+                if (MyNetworkUtils.doesNetworkConnectionExist(getApplicationContext())) {
+                    getMovieData();
+                } else {
+                    mSwipeRefreshLayout.setRefreshing(false
+                    );
+                    showEmptyState();
+                }
 
             }
         });
 
-        mService = TheMovieDbApiClient.getClient().create(TheMovieDbAPI.class);
-        getMovieData();
-
+        if (MyNetworkUtils.doesNetworkConnectionExist(this)) {
+            mService = TheMovieDbApiClient.getClient().create(TheMovieDbAPI.class);
+            getMovieData();
+        } else {
+            showEmptyState();
+        }
 
 
     }
@@ -159,23 +159,22 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
                     @Override
                     public void onResponse(Call<MoviesResults> call, Response<MoviesResults> response) {
                         if (response.body() != null) {
-
                             List<Movie> movieList = response.body().getResults();
                             mPosterAdapter.setMoviePosterData(movieList);
                             Log.v(LOG_TAG, "onResponse! Just did something" );
-
                             // Success.
                             hideEmptyState();
                             mSwipeRefreshLayout.setRefreshing(false);
-
                         } else {
                             Log.v(LOG_TAG, "response is null!");
+                            showEmptyState();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<MoviesResults> call, Throwable t) {
-
+                        Log.e(LOG_TAG, "Something went wrong here..." + t);
+                        showEmptyState();
                     }
                 });
 
@@ -184,11 +183,9 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
                 callTopRated.enqueue(new Callback<MoviesResults>() {
                     @Override
                     public void onResponse(Call<MoviesResults> call, Response<MoviesResults> response) {
-
                         List<Movie> movieList = response.body().getResults();
                         mPosterAdapter.setMoviePosterData(movieList);
                         Log.v(LOG_TAG, "onResponse! Just did something" );
-
                         // Success.
                         hideEmptyState();
                         mSwipeRefreshLayout.setRefreshing(false);
@@ -196,13 +193,10 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
 
                     @Override
                     public void onFailure(Call<MoviesResults> call, Throwable t) {
-
                         Log.e(LOG_TAG, "Something went wrong here..." + t);
-
+                        showEmptyState();
                     }
                 });
-            default:
-                // nothing
         }
 
     }
@@ -231,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
     /**
      * This method was orverridden to handle RecyclerView poster (item) clicks.
      *
-     * @param view        The view contianing the poster item clicked.
+     * @param view        The view containing the poster item clicked.
      * @param aMovieTitle The movie name for the corresponding poster.
      */
     @Override
@@ -262,13 +256,10 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
      * activity.
      *
      * @param aDetailTextView The detail button for the corresponding poster.
-     * @param aMovieTitle     The name of the movie.
+     * @param aMovieId The integer ID of the movie that was clicked.
      */
     @Override
-    public void onDetailButtonClick(TextView aDetailTextView, String aMovieTitle, Uri aPosterUri,
-                                    Uri aBackdropUri, String aOverview,
-                                    //String aReleaseYear,
-                                    String aVoteAverage, int aId) {
+    public void onDetailButtonClick(TextView aDetailTextView, int aMovieId) {
         // The user has clicked the detail button. Slide the detail button up to hide it.
         Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.detail_button_slide_up);
         aDetailTextView.startAnimation(slideOut);
@@ -277,13 +268,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         // Now open the MovieDetailActivity and pass the current movie information to it
         Intent intent = new Intent(this, MovieDetailActivity.class);
         Bundle extras = new Bundle();
-        extras.putString("EXTRA_MOVIE_TITLE", aMovieTitle);
-        extras.putString("EXTRA_MOVIE_POSTER", aPosterUri.toString());
-        extras.putString("EXTRA_MOVIE_BACKDROP", aBackdropUri.toString());
-        extras.putString("EXTRA_MOVIE_OVERVIEW", aOverview);
-        //extras.putString("EXTRA_MOVIE_RELEASE_YEAR", aReleaseYear);
-        extras.putString("EXTRA_MOVIE_VOTE_AVERAGE", aVoteAverage);
-        extras.putInt("EXTRA_MOVIE_ID", aId);
+        extras.putInt("EXTRA_MOVIE_ID", aMovieId);
         intent.putExtras(extras);
         startActivity(intent);
     }
