@@ -166,6 +166,8 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
 
         // Test code ------------------------------------------------------------------------------>
 
+        // Testing again
+
 
         TheMovieDbAPI service =
                 TheMovieDbApiClient.getClient().create(TheMovieDbAPI.class);
