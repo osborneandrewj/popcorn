@@ -41,9 +41,14 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         void onClick(View view, TextView aDetailTextView, String aMovieTitle);
 
         // Clicks to detail button
-        void onDetailButtonClick(TextView aDetailTextView, String aMovieTitle, Uri aPosterUri,
-                                 Uri aBackdropUri, String aSynopsis, String aReleaseYear,
-                                 String aVoteAverage);
+        void onDetailButtonClick(TextView aDetailTextView,
+                                 String aMovieTitle,
+                                 Uri aPosterUri,
+                                 Uri aBackdropUri,
+                                 String aSynopsis,
+                                 //String aReleaseYear,
+                                 String aVoteAverage,
+                                 int aId);
     }
 
     /**
@@ -163,9 +168,10 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
                         currentMovie.getTitle(),
                         currentMovie.getPosterUri(),
                         currentMovie.getBackdropUri(),
-                        currentMovie.getMovieOverview(),
-                        currentMovie.getReleaseYear(),
-                        currentMovie.getVoteAverage());
+                        currentMovie.getOverview(),
+                        //currentMovie.getReleaseDate(),
+                        String.valueOf(currentMovie.getVoteAverage()),
+                        currentMovie.getId());
             } else {
                 // The user clicked on the poster itself
                 mClickHandler.onClick(view, mDetailTextView, currentMovie.getTitle());

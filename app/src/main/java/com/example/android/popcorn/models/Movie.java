@@ -17,11 +17,18 @@ public class Movie {
 
     @SerializedName("title")
     private String title;
-    private String mPosterPath;
-    private String mBackdropPath;
-    private String mMovieOverview;
-    private String mReleaseDate;
-    private long mVoteAverage;
+    @SerializedName("poster_path")
+    private String posterPath;
+    @SerializedName("backdrop_path")
+    private String backdropPath;
+    @SerializedName("overview")
+    private String overview;
+    @SerializedName("release_date")
+    private String releaseDate;
+    @SerializedName("vote_average")
+    private long voteAverage;
+    @SerializedName("id")
+    private int id;
 
     /**
      * Create a new Movie object
@@ -34,50 +41,39 @@ public class Movie {
      * @param aMovieOverview The overview of the movie.
      * @param aReleaseDate The date the movie was released in a YYYY-MM-DD format.
      * @param aVoteAverage The average vote in a #.# format.
+     * @param aId The integer ID of the current movie (ex. 334509). This is used to get further
+     *            details
      */
     public Movie(String aTitle,
                  String aPosterPath,
                  String aBackdropPath,
                  String aMovieOverview,
                  String aReleaseDate,
-                 long aVoteAverage) {
+                 long aVoteAverage,
+                 int aId) {
 
         title = aTitle;
-        mPosterPath = aPosterPath;
-        mBackdropPath = aBackdropPath;
-        mMovieOverview = aMovieOverview;
-        mReleaseDate = aReleaseDate;
-        mVoteAverage = aVoteAverage;
+        posterPath = aPosterPath;
+        backdropPath = aBackdropPath;
+        overview = aMovieOverview;
+        releaseDate = aReleaseDate;
+        voteAverage = aVoteAverage;
+        id = aId;
 
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getMovieOverview() {
-        return mMovieOverview;
-    }
-
-    public String getVoteAverage() {
-        return String.valueOf(mVoteAverage);
-    }
 
     /**
      * Return the year of release formatted as "yyyy". Example: "2017".
      *
      * @return The year of release formatted as a String.
      */
-    public String getReleaseYear() {
+    public String getReleaseDate() {
         SimpleDateFormat fromFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         SimpleDateFormat toFormat = new SimpleDateFormat("yyyy", Locale.US);
         String releaseYear = "";
         try {
-            releaseYear = toFormat.format(fromFormat.parse(mReleaseDate));
+            releaseYear = toFormat.format(fromFormat.parse(releaseDate));
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -86,7 +82,7 @@ public class Movie {
     }
 
     public String getPosterPath() {
-        return mPosterPath;
+        return posterPath;
     }
 
     /**
@@ -105,7 +101,7 @@ public class Movie {
     }
 
     public String getBackdropPath() {
-        return mBackdropPath;
+        return backdropPath;
     }
 
     /**
@@ -121,5 +117,53 @@ public class Movie {
                 .build();
 
         return backdropUri;
+    }
+
+    /**
+     * From here down are getter and setter methods that were automatically generated
+     */
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public long getVoteAverage() {
+        return voteAverage;
+    }
+
+    public void setVoteAverage(long voteAverage) {
+        this.voteAverage = voteAverage;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

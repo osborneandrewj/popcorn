@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String DEFAULT_SORT_ORDER = "0";
+    private static final String SORT_BY_POPULARITY = "1";
+    private static final String SORT_BY_TOP_RATED = "2";
     private static final int TWO_POSTERS_WIDE = 2;
     private static final int THREE_POSTERS_WIDE = 3;
 
@@ -84,35 +86,35 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
     /**
      *  Used to load data from the www.TMDb.com server
      */
-    private android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<Movie>>
-    mLoaderCallbacks = new LoaderManager.LoaderCallbacks<ArrayList<Movie>>() {
-        @Override
-        public Loader<ArrayList<Movie>> onCreateLoader(int id, Bundle args) {
-            return new MovieResultsLoader(getApplicationContext(), getSortOrder());
-        }
-
-        @Override
-        public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
-            if (data != null) {
-                // Success. Show the movie posters.
-                hideEmptyState();
-                mPosterAdapter.setMoviePosterData(data);
-                // Stop swipe refresh animation
-                mSwipeRefreshLayout.setRefreshing(false);
-            } else {
-                // Something went wrong. Check network connection
-                // Show empty state
-                showEmptyState();
-                // Stop refresh animation
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        }
-
-        @Override
-        public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
-
-        }
-    };
+//    private android.support.v4.app.LoaderManager.LoaderCallbacks<ArrayList<Movie>>
+//    mLoaderCallbacks = new LoaderManager.LoaderCallbacks<ArrayList<Movie>>() {
+//        @Override
+//        public Loader<ArrayList<Movie>> onCreateLoader(int id, Bundle args) {
+//            return new MovieResultsLoader(getApplicationContext(), getSortOrder());
+//        }
+//
+//        @Override
+//        public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
+//            if (data != null) {
+//                // Success. Show the movie posters.
+//                hideEmptyState();
+//                mPosterAdapter.setMoviePosterData(data);
+//                // Stop swipe refresh animation
+//                mSwipeRefreshLayout.setRefreshing(false);
+//            } else {
+//                // Something went wrong. Check network connection
+//                // Show empty state
+//                showEmptyState();
+//                // Stop refresh animation
+//                mSwipeRefreshLayout.setRefreshing(false);
+//            }
+//        }
+//
+//        @Override
+//        public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
+//
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,18 +150,18 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         mRecyclerView.setAdapter(mPosterAdapter);
 
         // Initialize the loader
-        getSupportLoaderManager().initLoader(1, null, mLoaderCallbacks);
+//        getSupportLoaderManager().initLoader(1, null, mLoaderCallbacks);
 
         // Swipe refresh functionality
-        mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh_layout);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // Refresh the loader
-                getSupportLoaderManager().restartLoader(1, null, mLoaderCallbacks);
-
-            }
-        });
+        //mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh_layout);
+        //mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                // Refresh the loader
+//                getSupportLoaderManager().restartLoader(1, null, mLoaderCallbacks);
+//
+//            }
+//        });
 
 
         // Test code ------------------------------------------------------------------------------>
@@ -168,25 +170,50 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         TheMovieDbAPI service =
                 TheMovieDbApiClient.getClient().create(TheMovieDbAPI.class);
 
-        Call<MoviesResults> call = service.getPopularMovies(TheMovieDbAPI.API_KEY);
-        call.enqueue(new Callback<MoviesResults>() {
-            @Override
-            public void onResponse(Call<MoviesResults> call, Response<MoviesResults> response) {
-                if (response.body() != null) {
-                    List<Movie> movies = response.body().getResults();
-                    Log.d(LOG_TAG, "Number of movies received: " + movies.size());
-                    String title = movies.get(0).getTitle();
-                    Log.v(LOG_TAG, "Movie title: " + title);
-                } else {
-                    Log.v(LOG_TAG, "response is null!");
-                }
-            }
+        switch (getSortOrder()) {
 
-            @Override
-            public void onFailure(Call<MoviesResults> call, Throwable t) {
+            case SORT_BY_POPULARITY:
 
-            }
-        });
+                Call<MoviesResults> callPopular = service.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_KEY);
+                callPopular.enqueue(new Callback<MoviesResults>() {
+                    @Override
+                    public void onResponse(Call<MoviesResults> call, Response<MoviesResults> response) {
+                        if (response.body() != null) {
+
+                            List<Movie> movies = response.body().getResults();
+
+                        } else {
+                            Log.v(LOG_TAG, "response is null!");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<MoviesResults> call, Throwable t) {
+
+                    }
+                });
+
+            case SORT_BY_TOP_RATED:
+                Call<MoviesResults> callTopRated = service.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_KEY);
+                callTopRated.enqueue(new Callback<MoviesResults>() {
+                    @Override
+                    public void onResponse(Call<MoviesResults> call, Response<MoviesResults> response) {
+
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<MoviesResults> call, Throwable t) {
+
+                    }
+                });
+                default:
+                    // nothing
+        }
+
+
+
 
     }
 
@@ -249,8 +276,9 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
      */
     @Override
     public void onDetailButtonClick(TextView aDetailTextView, String aMovieTitle, Uri aPosterUri,
-                                    Uri aBackdropUri, String aOverview, String aReleaseYear,
-                                    String aVoteAverage) {
+                                    Uri aBackdropUri, String aOverview,
+                                    //String aReleaseYear,
+                                    String aVoteAverage, int aId) {
         // The user has clicked the detail button. Slide the detail button up to hide it.
         Animation slideOut = AnimationUtils.loadAnimation(this, R.anim.detail_button_slide_up);
         aDetailTextView.startAnimation(slideOut);
@@ -263,8 +291,9 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         extras.putString("EXTRA_MOVIE_POSTER", aPosterUri.toString());
         extras.putString("EXTRA_MOVIE_BACKDROP", aBackdropUri.toString());
         extras.putString("EXTRA_MOVIE_OVERVIEW", aOverview);
-        extras.putString("EXTRA_MOVIE_RELEASE_YEAR", aReleaseYear);
+        //extras.putString("EXTRA_MOVIE_RELEASE_YEAR", aReleaseYear);
         extras.putString("EXTRA_MOVIE_VOTE_AVERAGE", aVoteAverage);
+        extras.putInt("EXTRA_MOVIE_ID", aId);
         intent.putExtras(extras);
         startActivity(intent);
     }
@@ -296,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        getSupportLoaderManager().restartLoader(1, null, mLoaderCallbacks);
+//        getSupportLoaderManager().restartLoader(1, null, mLoaderCallbacks);
     }
 
     /**

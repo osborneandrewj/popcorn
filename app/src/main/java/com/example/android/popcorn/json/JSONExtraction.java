@@ -21,6 +21,7 @@ public class JSONExtraction {
     private final static String MOVIE_OVERVIEW = "overview";
     private final static String MOVIE_RELEASE_DATE = "release_data";
     private final static String MOVIE_VOTE_AVERAGE = "vote_average";
+    private final static String MOVIE_ID = "id";
 
     private JSONExtraction() {
         // No need to create
@@ -82,6 +83,11 @@ public class JSONExtraction {
                     voteAverage = currentMovie.getLong(MOVIE_VOTE_AVERAGE);
                 }
 
+                int movieId = 0;
+                if (currentMovie.has(MOVIE_ID)) {
+                    movieId = currentMovie.getInt(MOVIE_ID);
+                }
+
                 // Now create a new Movie object
                 Movie aMovie = new Movie(
                         movieTitle,
@@ -89,7 +95,8 @@ public class JSONExtraction {
                         backdropPath,
                         synopsis,
                         releaseDate,
-                        voteAverage);
+                        voteAverage,
+                        movieId);
                 // Then add this object to the array
                 movieArrayList.add(aMovie);
             }

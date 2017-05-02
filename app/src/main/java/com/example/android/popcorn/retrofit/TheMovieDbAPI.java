@@ -16,9 +16,6 @@ import retrofit2.http.Query;
 
 public interface TheMovieDbAPI {
 
-    public static final String API_KEY = BuildConfig.THE_MOVIE_DB_API_KEY;
-    public String movieId = "330459";
-
     // Get a list of top-rated movies
     @GET("movie/top_rated")
     Call<MoviesResults> getTopRatedMovies(@Query("api_key") String apiKey);
@@ -26,4 +23,9 @@ public interface TheMovieDbAPI {
     // Get a list of current most popular movies
     @GET("movie/popular")
     Call<MoviesResults> getPopularMovies(@Query("api_key") String apiKey);
+
+    // Get movie details
+    @GET("movie/{movie_id}")
+    Call<Movie> getMovieDetails(
+            @Path("movie_id") int id, @Query("api_key") String apiKey);
 }
