@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,9 +71,14 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      */
     @Override
     public PosterAdapterViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
+        Log.v(LOG_TAG, "onCreateViewHolder starting. mHeight = " + mHeight );
+
         mContext = parent.getContext();
         View view = mInflater.inflate(R.layout.poster_item, parent, false);
         final PosterAdapterViewHolder viewHolder = new PosterAdapterViewHolder(view);
+
+        Log.v(LOG_TAG, "onCreateViewHolder starting. viewHolder height = " + viewHolder.mContainer.getLayoutParams().height );
+
 
         if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             // Make each poster take up half the size of the screen
@@ -84,6 +90,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
                     mHeight = parent.getMeasuredHeight() / 2;
                     View view = viewHolder.mContainer;
                     view.getLayoutParams().height = mHeight;
+                    Log.v(LOG_TAG, "Portrait layout height = " + mHeight);
                 }
             });
         } else {
@@ -94,6 +101,8 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
                     mHeight = parent.getMeasuredHeight();
                     View view = viewHolder.mContainer;
                     view.getLayoutParams().height = mHeight;
+                    Log.v(LOG_TAG, "Landscape layout height = " + mHeight);
+
                 }
             });
         }
@@ -109,11 +118,17 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      */
     @Override
     public void onBindViewHolder(PosterAdapterViewHolder holder, int position) {
+
+
         // Get the current object
         Movie currentMovie = mMovieList.get(position);
 
         // test picture
-        Picasso.with(mContext).load(currentMovie.getPosterUri()).into(holder.mPosterImage);
+        Picasso.with(mContext)
+                .load(currentMovie.getPosterUri())
+                .into(holder.mPosterImage);
+
+        Log.v(LOG_TAG, "onBindViewHolder. mHeight = " + mHeight);
     }
 
     /**
@@ -179,5 +194,8 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         notifyDataSetChanged();
     }
 
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 }

@@ -3,6 +3,7 @@ package com.example.android.popcorn;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -65,9 +66,9 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements PosterAdapter.PosterAdapterOnClickHandler {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    private static final String DEFAULT_SORT_ORDER = "100";
-    private static final String SORT_BY_POPULARITY = "100";
-    private static final String SORT_BY_TOP_RATED = "200";
+    private static final String DEFAULT_SORT_ORDER = "0";
+    private static final String SORT_BY_POPULARITY = "0";
+    private static final String SORT_BY_TOP_RATED = "1";
 
     private static final int TWO_POSTERS_WIDE = 2;
     private static final int THREE_POSTERS_WIDE = 3;
@@ -78,6 +79,9 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
     private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TheMovieDbAPI mService;
+
+    private Parcelable mRecyclerViewState;
+    private static final String BUNDLE_KEY = "bundle-key";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
                         if (response.body() != null) {
                             List<Movie> movieList = response.body().getResults();
                             mPosterAdapter.setMoviePosterData(movieList);
-                            Log.v(LOG_TAG, "onResponse! Just did something" );
+                            Log.v(LOG_TAG, "Getting Popular Movies" );
                             // Success.
                             hideEmptyState();
                             mSwipeRefreshLayout.setRefreshing(false);
@@ -185,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
                     public void onResponse(Call<MoviesResults> call, Response<MoviesResults> response) {
                         List<Movie> movieList = response.body().getResults();
                         mPosterAdapter.setMoviePosterData(movieList);
-                        Log.v(LOG_TAG, "onResponse! Just did something" );
+                        Log.v(LOG_TAG, "Getting Top Rated Movies" );
                         // Success.
                         hideEmptyState();
                         mSwipeRefreshLayout.setRefreshing(false);
@@ -209,17 +213,6 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
     private void showEmptyState() {
         mRecyclerView.setVisibility(View.INVISIBLE);
         mEmptyStateTextView.setVisibility(View.VISIBLE);
-    }
-
-
-    /**
-     * Overriding this method ensures that the poster dimensions are refreshed from the
-     * PosterAdapter class
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mPosterAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -293,15 +286,6 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
     }
 
     /**
-     * Restart the loader when resuming activity. This is required to reset detail button
-     * animations.
-     */
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-    }
-
-    /**
      * Get the sort order preference from settings. If no preference exists, the default value of
      * sort by popularity will be used.
      */
@@ -319,4 +303,32 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         Log.v(LOG_TAG, "sortOrder = " + sortOrder);
         return sortOrder;
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Save the list
+        mRecyclerViewState = mLayoutManager.onSaveInstanceState();
+        outState.putParcelable(BUNDLE_KEY, mRecyclerViewState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Retrieve the list
+        mRecyclerViewState = savedInstanceState.getParcelable(BUNDLE_KEY);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mRecyclerViewState != null) {
+            mLayoutManager.onRestoreInstanceState(mRecyclerViewState);
+        }
+        mPosterAdapter.notifyDataSetChanged();
+    }
+
+
 }
