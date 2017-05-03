@@ -65,6 +65,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      * Inflates the cell layout from xml when needed. This is called when every new
      * PosterAdapterViewHolder is created.
      *
+     * It is important that the size of each container is resized when the screen orientation is
+     * changed.
+     *
      * @param parent
      * @param viewType
      * @return
@@ -74,16 +77,13 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         Log.v(LOG_TAG, "onCreateViewHolder starting. mHeight = " + mHeight );
 
         mContext = parent.getContext();
-        View view = mInflater.inflate(R.layout.poster_item, parent, false);
-        final PosterAdapterViewHolder viewHolder = new PosterAdapterViewHolder(view);
-
-        Log.v(LOG_TAG, "onCreateViewHolder starting. viewHolder height = " + viewHolder.mContainer.getLayoutParams().height );
-
 
         if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             // Make each poster take up half the size of the screen
             // This is accomplished by measuring the LinearLayout containing the ImageView and
             // dividing that by half
+            View view = mInflater.inflate(R.layout.poster_item, parent, false);
+            final PosterAdapterViewHolder viewHolder = new PosterAdapterViewHolder(view);
             parent.post(new Runnable() {
                 @Override
                 public void run() {
@@ -93,7 +93,12 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
                     Log.v(LOG_TAG, "Portrait layout height = " + mHeight);
                 }
             });
+            Log.v(LOG_TAG, "onCreateViewHolder starting. viewHolder height = " + viewHolder.mContainer.getLayoutParams().height );
+            return viewHolder;
         } else {
+            View view = mInflater.inflate(R.layout.poster_item, parent, false);
+
+            final PosterAdapterViewHolder viewHolder = new PosterAdapterViewHolder(view);
             // Make each poster take up the entire screen
             parent.post(new Runnable() {
                 @Override
@@ -105,9 +110,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
 
                 }
             });
+            Log.v(LOG_TAG, "onCreateViewHolder starting. viewHolder height = " + viewHolder.mContainer.getLayoutParams().height );
+            return viewHolder;
         }
-
-        return viewHolder;
     }
 
     /**
