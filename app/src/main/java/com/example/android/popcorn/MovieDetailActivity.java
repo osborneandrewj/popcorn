@@ -16,6 +16,7 @@ import com.example.android.popcorn.retrofit.TheMovieDbApiClient;
 import com.example.android.popcorn.utilites.MyDateAndTimeUtils;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -99,10 +100,10 @@ public class MovieDetailActivity extends AppCompatActivity {
             featuresCall.enqueue(new Callback<MovieRelease>() {
                 @Override
                 public void onResponse(Call<MovieRelease> call, Response<MovieRelease> response) {
-                    Log.v(LOG_TAG, "Trying to get certification..." + response.body().getResults().);
+                    Log.v(LOG_TAG, "Trying to get certification..." + response.body().getResults());
 
                     List<MovieReleaseFeatures> movieReleaseFeatures = response.body().getResults();
-                    ReleaseDate releaseDateObject = movieReleaseFeatures.g
+                    certification.setText(getCertification(movieReleaseFeatures));
                 }
 
                 @Override
@@ -121,5 +122,20 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void showErrorView() {
         // TODO: finish error view
+    }
+
+    private String getCertification(List<MovieReleaseFeatures> list) {
+
+        List<ReleaseDate> releaseDate;
+        String certification = "";
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getIso31661().equals("US")) {
+                releaseDate = list.get(i).getReleaseDates();
+                certification = releaseDate.get(0).getCertification();
+            }
+        }
+        return certification;
+
     }
 }
