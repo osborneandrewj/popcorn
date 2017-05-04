@@ -327,7 +327,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         if (mRecyclerViewState != null) {
             mLayoutManager.onRestoreInstanceState(mRecyclerViewState);
         }
-        mPosterAdapter.notifyDataSetChanged();
+        //mPosterAdapter.notifyDataSetChanged();
     }
 
 

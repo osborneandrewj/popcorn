@@ -5,6 +5,7 @@
     <color name="colorAccent">#d32f2f</color>
 
     <color name="colorWhiteText">#ffffff</color>
+    <color name="colorGreyText">#656565</color>
 
     <!--A slightly transparent color for the detail button-->
     <color name="colorDetailButtonTransparent">#E1c62828</color>

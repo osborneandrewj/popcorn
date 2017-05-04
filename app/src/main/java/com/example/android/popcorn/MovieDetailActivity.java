@@ -8,10 +8,16 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.android.popcorn.models.Movie;
+import com.example.android.popcorn.models.MovieRelease;
+import com.example.android.popcorn.models.MovieReleaseFeatures;
+import com.example.android.popcorn.models.ReleaseDate;
 import com.example.android.popcorn.retrofit.TheMovieDbAPI;
 import com.example.android.popcorn.retrofit.TheMovieDbApiClient;
-import com.example.android.popcorn.utilites.MyNetworkUtils;
+import com.example.android.popcorn.utilites.MyDateAndTimeUtils;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,7 +37,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         // Note: If there are no extras, the error view will be shown
         if (getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();
-            int movieId = extras.getInt("EXTRA_MOVIE_ID");
+            final int movieId = extras.getInt("EXTRA_MOVIE_ID");
 
             // Setup the toolbar and the title of the activity
             setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
@@ -44,11 +50,17 @@ public class MovieDetailActivity extends AppCompatActivity {
             final ImageView backdropImageView = (ImageView) findViewById(R.id.detail_movie_backdrop);
             final ImageView posterImage = (ImageView) findViewById(R.id.img_poster);
             final TextView synopsis = (TextView) findViewById(R.id.tv_summary);
+            final TextView releaseDate = (TextView) findViewById(R.id.tv_release_date);
+            final TextView runtime = (TextView) findViewById(R.id.tv_runtime);
+            final TextView certification = (TextView) findViewById(R.id.tv_movie_rating);
 
             TheMovieDbAPI service =
                     TheMovieDbApiClient.getClient().create(TheMovieDbAPI.class);
 
+            // Get the movie details from TMDB API using retrofit
+
             Call<Movie> call = service.getMovieDetails(movieId, BuildConfig.THE_MOVIE_DB_API_KEY);
+
             call.enqueue(new Callback<Movie>() {
                 @Override
                 public void onResponse(Call<Movie> call, Response<Movie> response) {
@@ -56,6 +68,9 @@ public class MovieDetailActivity extends AppCompatActivity {
                     // Set various text
                     synopsis.setText(response.body().getOverview());
                     collapsingToolbarLayout.setTitle(response.body().getTitle());
+                    releaseDate.setText(response.body().getReleaseDate());
+                    String formattedRuntime = MyDateAndTimeUtils.GetFormattedRuntime(response.body().getRuntime());
+                    runtime.setText(formattedRuntime);
 
                     // Load the backdrop
                     Picasso.with(getApplicationContext())
@@ -76,8 +91,30 @@ public class MovieDetailActivity extends AppCompatActivity {
                     showErrorView();
                 }
             });
+
+            // Get the movie certification (content rating, "R", "PG", etc) from the same API
+
+            Call<MovieRelease> featuresCall = service.getMovieRelease(movieId,
+                    BuildConfig.THE_MOVIE_DB_API_KEY);
+            featuresCall.enqueue(new Callback<MovieRelease>() {
+                @Override
+                public void onResponse(Call<MovieRelease> call, Response<MovieRelease> response) {
+                    Log.v(LOG_TAG, "Trying to get certification..." + response.body().getResults().);
+
+                    List<MovieReleaseFeatures> movieReleaseFeatures = response.body().getResults();
+                    ReleaseDate releaseDateObject = movieReleaseFeatures.g
+                }
+
+                @Override
+                public void onFailure(Call<MovieRelease> call, Throwable t) {
+                    Log.e(LOG_TAG, "Retrofit failed to get information! Error: " + t);
+                    showErrorView();
+                }
+            });
+
         } else {
-            // Something went wrong! The intent did not have any extras.
+            // Something went wrong! The intent did not have any extras so no movie ID
+            // was available to use
             showErrorView();
         }
     }

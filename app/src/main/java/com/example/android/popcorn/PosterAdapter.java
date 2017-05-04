@@ -74,7 +74,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      */
     @Override
     public PosterAdapterViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-        Log.v(LOG_TAG, "onCreateViewHolder starting. mHeight = " + mHeight );
 
         mContext = parent.getContext();
 
@@ -90,10 +89,8 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
                     mHeight = parent.getMeasuredHeight() / 2;
                     View view = viewHolder.mContainer;
                     view.getLayoutParams().height = mHeight;
-                    Log.v(LOG_TAG, "Portrait layout height = " + mHeight);
                 }
             });
-            Log.v(LOG_TAG, "onCreateViewHolder starting. viewHolder height = " + viewHolder.mContainer.getLayoutParams().height );
             return viewHolder;
         } else {
             View view = mInflater.inflate(R.layout.poster_item, parent, false);
@@ -106,11 +103,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
                     mHeight = parent.getMeasuredHeight();
                     View view = viewHolder.mContainer;
                     view.getLayoutParams().height = mHeight;
-                    Log.v(LOG_TAG, "Landscape layout height = " + mHeight);
 
                 }
             });
-            Log.v(LOG_TAG, "onCreateViewHolder starting. viewHolder height = " + viewHolder.mContainer.getLayoutParams().height );
             return viewHolder;
         }
     }
@@ -124,7 +119,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     @Override
     public void onBindViewHolder(PosterAdapterViewHolder holder, int position) {
 
-
         // Get the current object
         Movie currentMovie = mMovieList.get(position);
 
@@ -132,8 +126,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         Picasso.with(mContext)
                 .load(currentMovie.getPosterUri())
                 .into(holder.mPosterImage);
-
-        Log.v(LOG_TAG, "onBindViewHolder. mHeight = " + mHeight);
     }
 
     /**

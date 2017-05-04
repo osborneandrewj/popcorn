@@ -29,6 +29,8 @@ public class Movie {
     private double voteAverage;
     @SerializedName("id")
     private int id;
+    @SerializedName("runtime")
+    private int runtime;
 
     /**
      * Create a new Movie object
@@ -50,7 +52,8 @@ public class Movie {
                  String aMovieOverview,
                  String aReleaseDate,
                  double aVoteAverage,
-                 int aId) {
+                 int aId,
+                 int aRuntime) {
 
         title = aTitle;
         posterPath = aPosterPath;
@@ -59,6 +62,7 @@ public class Movie {
         releaseDate = aReleaseDate;
         voteAverage = aVoteAverage;
         id = aId;
+        runtime = aRuntime;
 
     }
 
@@ -165,5 +169,13 @@ public class Movie {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(int runtime) {
+        this.runtime = runtime;
     }
 }
