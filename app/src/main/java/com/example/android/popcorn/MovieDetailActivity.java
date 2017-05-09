@@ -50,6 +50,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView mTrailerButton;
     private TextView mUserRatingInfo;
     private TextView mUserRatingTotal;
+    private boolean isFavorite;
+    private TextView mFavoriteButton;
+    private ImageView mFavoriteStar;
 
     private ReviewAdapter mReviewAdapter;
     private RecyclerView mRecyclerView;
@@ -87,6 +90,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         mReviewAdapter = new ReviewAdapter(this, new ArrayList<MovieReviews>());
         mRecyclerView.setAdapter(mReviewAdapter);
 
+        // Favorites
+        mFavoriteButton = (TextView) findViewById(R.id.tv_favorite_label);
+        mFavoriteStar = (ImageView) findViewById(R.id.userRatingStar);
+
         if (getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();
             mMovieId = extras.getInt("EXTRA_MOVIE_ID");
@@ -104,6 +111,19 @@ public class MovieDetailActivity extends AppCompatActivity {
                 }
             });
             setUserReviews();
+            mFavoriteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addThisMovieToFavorites();
+                }
+            });
+            mFavoriteStar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addThisMovieToFavorites();
+                }
+            });
+
 
         } else {
             // Something went wrong! The intent did not have any extras so no movie ID
@@ -286,5 +306,20 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         Intent launchTrailerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeAddress));
         startActivity(launchTrailerIntent);
+    }
+
+    private void addThisMovieToFavorites() {
+
+        if (!isFavorite) {
+            isFavorite = true;
+            mFavoriteStar.setImageResource(R.drawable.rating_star_yellow);
+            return;
+        }
+
+        if (isFavorite) {
+            isFavorite = false;
+            mFavoriteStar.setImageResource(R.drawable.rating_star_outline);
+        }
+
     }
 }
