@@ -1,5 +1,11 @@
 package com.example.android.popcorn;
 
+/**
+ * App made by Andrew Osborne, 2017
+ *
+ * Star icons by: "http://www.flaticon.com/authors/madebyoliver"
+ */
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;

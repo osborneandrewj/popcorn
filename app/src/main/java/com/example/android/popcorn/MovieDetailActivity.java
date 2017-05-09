@@ -67,6 +67,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        // Details
         mBackdropImageView = (ImageView) findViewById(R.id.detail_movie_backdrop);
         mPosterImage = (ImageView) findViewById(R.id.img_poster);
         mSynopsis = (TextView) findViewById(R.id.tv_summary);
@@ -78,7 +79,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         mUserRatingTotal = (TextView) findViewById(R.id.tv_ratings_total);
 
 
-        // Setup the reviews section
+        // Reviews
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_reviews);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
@@ -86,33 +87,24 @@ public class MovieDetailActivity extends AppCompatActivity {
         mReviewAdapter = new ReviewAdapter(this, new ArrayList<MovieReviews>());
         mRecyclerView.setAdapter(mReviewAdapter);
 
-        // Get intent extras
-        // Note: If there are no extras, the error view will be shown
         if (getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();
             mMovieId = extras.getInt("EXTRA_MOVIE_ID");
             Log.v(LOG_TAG, "movieId: " + mMovieId);
 
-            // Setup Retrofit service
             mService = TheMovieDbApiClient.getClient().create(TheMovieDbAPI.class);
 
-            // Populate various details such as images, release year, synopsis, etc
             setMovieDetails();
-
-            // Populate the movie certification (content rating, "R", "PG", etc) from the same API
             setContentRating();
-
-            // Enable the movie trailer button
-            enableTrailerButton();
+            enableTrailerButtonFunctionality();
             mTrailerButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     launchYoutubeTrailer();
                 }
             });
-
-            // Set the user reviews
             setUserReviews();
+
         } else {
             // Something went wrong! The intent did not have any extras so no movie ID
             // was available to use
@@ -132,7 +124,6 @@ public class MovieDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
 
-                // Set various text
                 mSynopsis.setText(response.body().getOverview());
                 collapsingToolbarLayout.setTitle(response.body().getTitle());
                 mReleaseDate.setText(response.body().getReleaseDate());
@@ -140,7 +131,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 mRuntime.setText(formattedRuntime);
                 mUserRatingInfo.setText(String.valueOf(response.body().getVoteAverage()));
 
-                // Load the backdrop
+                // Load the backdrop image
                 Picasso.with(getApplicationContext())
                         .load(TheMovieDbAPI.BACKDROP_BASE_URL + response.body().getBackdropPath())
                         .noFade()
@@ -174,7 +165,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             public void onResponse(Call<MovieCertOuterWrapper> call, Response<MovieCertOuterWrapper> response) {
 
                 List<MovieCertInnerWrapper> movieReleaseFeatures = response.body().getResults();
-                mCertification.setText(getCertification(movieReleaseFeatures));
+                mCertification.setText(getMovieCertification(movieReleaseFeatures));
             }
 
             @Override
@@ -214,7 +205,7 @@ public class MovieDetailActivity extends AppCompatActivity {
      * Get the movie trailer Youtube key from TMDB and use it to enable the "Play Trailer" button
      * to send the user to the appropriate Youtube video.
      */
-    private void enableTrailerButton() {
+    private void enableTrailerButtonFunctionality() {
         // Get the trailer information
         // The goal of this section is to create a Youtube address that points to this movie's
         // trailer
@@ -226,7 +217,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             public void onResponse(Call<MovieVideoWrapper> call, Response<MovieVideoWrapper> response) {
 
                 List<MovieVideos> videos = response.body().getResults();
-                mYoutubeKey = getYoutubeKey(videos);
+                mYoutubeKey = getTrailerYoutubeKey(videos);
             }
 
             @Override
@@ -250,7 +241,7 @@ public class MovieDetailActivity extends AppCompatActivity {
      * @param list
      * @return the String representation of this movie's content rating
      */
-    private String getCertification(List<MovieCertInnerWrapper> list) {
+    private String getMovieCertification(List<MovieCertInnerWrapper> list) {
 
         List<ReleaseInfo> releaseInfo;
         String certification = "";
@@ -266,12 +257,12 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     /**
      * Get the movie Youtube key that we can use to complete the Youtube movie trailer address (i.e.
-     * https://www.youtube.com/watch?v=lEEmORyxpho where "lEEmORyxpho" is the key).
+     * "https://www.youtube.com/watch?v=lEEmORyxpho" where "lEEmORyxpho" is the key).
      *
      * @param list is the list of movie information obtained from TMDB
      * @return the Youtube key which will be used to build a Youtube address
      */
-    private String getYoutubeKey(List<MovieVideos> list) {
+    private String getTrailerYoutubeKey(List<MovieVideos> list) {
         String youtubeKey = "";
 
         for (int i = 0; i < list.size(); i++) {
