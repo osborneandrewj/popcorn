@@ -49,6 +49,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView mCertification;
     private TextView mTrailerButton;
     private TextView mUserRatingInfo;
+    private TextView mUserRatingTotal;
 
     private ReviewAdapter mReviewAdapter;
     private RecyclerView mRecyclerView;
@@ -74,6 +75,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         mCertification = (TextView) findViewById(R.id.tv_movie_rating);
         mTrailerButton = (TextView) findViewById(R.id.tv_trailer_button);
         mUserRatingInfo = (TextView) findViewById(R.id.tv_user_rating_info);
+        mUserRatingTotal = (TextView) findViewById(R.id.tv_ratings_total);
+
 
         // Setup the reviews section
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_reviews);
@@ -135,7 +138,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                 mReleaseDate.setText(response.body().getReleaseDate());
                 String formattedRuntime = MyDateAndTimeUtils.GetFormattedRuntime(response.body().getRuntime());
                 mRuntime.setText(formattedRuntime);
-
                 mUserRatingInfo.setText(String.valueOf(response.body().getVoteAverage()));
 
                 // Load the backdrop
@@ -194,6 +196,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             public void onResponse(Call<MovieReviewsWrapper> call, Response<MovieReviewsWrapper> response) {
                 List<MovieReviews> reviews = response.body().getResults();
                 mReviewAdapter.setReviewsData(reviews);
+
+                mUserRatingTotal.setText(String.valueOf(response.body().getTotalResults()));
                 Log.v(LOG_TAG, "Trying to get me some video information! " );
 
             }

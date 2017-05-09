@@ -28,10 +28,12 @@
     <string name="settings_sort_order_default">0</string>
 
     <!-- - - - - - - - - - - - - - - - - - -->
-    <!--     Used in MovieDetailActivit    -->
+    <!--     Used in MovieDetailActivity    -->
     <!-- - - - - - - - - - - - - - - - - - -->
 
     <string name="youtube_trailer_label">Play Trailer</string>
+    <string name="user_reviews_label">User Reviews</string>
+    <string name="ratings_label"> / 10</string>
 
 
 

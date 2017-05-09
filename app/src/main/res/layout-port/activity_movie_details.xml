@@ -54,7 +54,8 @@
                 android:layout_height="278dp"
                 android:layout_marginTop="24dp"
                 app:layout_constraintLeft_toLeftOf="@+id/tv_summary"
-                app:layout_constraintTop_toBottomOf="@+id/tv_summary" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_summary"
+                android:layout_marginLeft="0dp" />
 
             <TextView
                 android:id="@+id/tv_movie_rating"
@@ -137,30 +138,34 @@
                 android:id="@+id/tv_user_rating_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="160dp"
+                android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
-                app:layout_constraintLeft_toRightOf="@+id/tv_reviews_label"
-                tools:text="6 / 10"
-                tools:layout_editor_absoluteY="377dp" />
+                android:layout_marginTop="16dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:layout_constraintLeft_toLeftOf="@+id/tv_trailer_button"
+                app:layout_constraintTop_toBottomOf="@+id/tv_trailer_button"
+                tools:text="5.4" />
 
             <TextView
                 android:id="@+id/tv_reviews_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="8dp"
-                android:text="Reviews"
+                android:layout_marginTop="16dp"
+                android:text="@string/user_reviews_label"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                app:layout_constraintLeft_toLeftOf="@+id/img_poster"
                 app:layout_constraintTop_toBottomOf="@+id/img_poster"
-                tools:text="Reviews" />
+                tools:text="User Reviews"
+                android:layout_marginLeft="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginRight="8dp"
+                app:layout_constraintRight_toRightOf="parent" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview_reviews"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="-45dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
                 android:padding="16dp"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -168,6 +173,33 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_reviews_label">
 
             </android.support.v7.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="0dp"
+                android:text="@string/ratings_label"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:layout_constraintBottom_toTopOf="@+id/tv_user_rating_info"
+                app:layout_constraintLeft_toRightOf="@+id/tv_user_rating_info"
+                app:layout_constraintTop_toBottomOf="@+id/tv_user_rating_info"
+                tools:text=" / 10" />
+
+            <TextView
+                android:id="@+id/tv_ratings_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginTop="8dp"
+                android:textColorLink="@android:color/darker_gray"
+                app:layout_constraintLeft_toRightOf="@+id/textView"
+                app:layout_constraintRight_toLeftOf="@+id/tv_user_rating_info"
+                app:layout_constraintTop_toBottomOf="@+id/tv_user_rating_info"
+                tools:text="11,598" />
 
         </android.support.constraint.ConstraintLayout>
 
