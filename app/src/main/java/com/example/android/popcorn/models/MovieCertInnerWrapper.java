@@ -9,31 +9,31 @@ import com.google.gson.annotations.SerializedName;
  *
  */
 
-public class MovieReleaseFeatures {
+public class MovieCertInnerWrapper {
 
     @SerializedName("iso_3166_1")
     @Expose
     private String iso31661;
     @SerializedName("release_dates")
     @Expose
-    private List<ReleaseDate> releaseDates = null;
+    private List<ReleaseInfo> releaseInfos = null;
 
     /**
      * No args constructor for use in serialization
      *
      */
-    public MovieReleaseFeatures() {
+    public MovieCertInnerWrapper() {
     }
 
     /**
      *
      * @param iso31661
-     * @param releaseDates
+     * @param releaseInfos
      */
-    public MovieReleaseFeatures(String iso31661, List<ReleaseDate> releaseDates) {
+    public MovieCertInnerWrapper(String iso31661, List<ReleaseInfo> releaseInfos) {
         super();
         this.iso31661 = iso31661;
-        this.releaseDates = releaseDates;
+        this.releaseInfos = releaseInfos;
     }
 
     public String getIso31661() {
@@ -44,12 +44,12 @@ public class MovieReleaseFeatures {
         this.iso31661 = iso31661;
     }
 
-    public List<ReleaseDate> getReleaseDates() {
-        return releaseDates;
+    public List<ReleaseInfo> getReleaseInfos() {
+        return releaseInfos;
     }
 
-    public void setReleaseDates(List<ReleaseDate> releaseDates) {
-        this.releaseDates = releaseDates;
+    public void setReleaseInfos(List<ReleaseInfo> releaseInfos) {
+        this.releaseInfos = releaseInfos;
     }
 
 }

@@ -1,9 +1,9 @@
 package com.example.android.popcorn.retrofit;
 
-import com.example.android.popcorn.BuildConfig;
 import com.example.android.popcorn.models.Movie;
-import com.example.android.popcorn.models.MovieRelease;
-import com.example.android.popcorn.models.MovieReleaseFeatures;
+import com.example.android.popcorn.models.MovieCertOuterWrapper;
+import com.example.android.popcorn.models.MovieReviewsWrapper;
+import com.example.android.popcorn.models.MovieVideoWrapper;
 import com.example.android.popcorn.models.MoviesResults;
 
 import retrofit2.Call;
@@ -37,6 +37,16 @@ public interface TheMovieDbAPI {
 
     // Get movie content rating
     @GET("movie/{movie_id}/release_dates")
-    Call<MovieRelease> getMovieRelease(
+    Call<MovieCertOuterWrapper> getMovieRelease(
+            @Path("movie_id") int id, @Query("api_key") String apiKey);
+
+    // Get movie video information (trailers, etc)
+    @GET("movie/{movie_id}/videos")
+    Call<MovieVideoWrapper> getMovieVideos(
+            @Path("movie_id") int id, @Query("api_key") String apiKey);
+
+    // Get user reviews for a movie
+    @GET("movie/{movie_id}/reviews")
+    Call<MovieReviewsWrapper> getMovieReviews(
             @Path("movie_id") int id, @Query("api_key") String apiKey);
 }

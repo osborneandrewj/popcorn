@@ -27,6 +27,12 @@
     <!--Sort according to popularity by default-->
     <string name="settings_sort_order_default">0</string>
 
+    <!-- - - - - - - - - - - - - - - - - - -->
+    <!--     Used in MovieDetailActivit    -->
+    <!-- - - - - - - - - - - - - - - - - - -->
+
+    <string name="youtube_trailer_label">Play Trailer</string>
+
 
 
     <!-- - - - - - - - - - - - - - - - - - -->

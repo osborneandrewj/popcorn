@@ -9,20 +9,20 @@ import com.google.gson.annotations.SerializedName;
  *
  */
 
-public class MovieRelease {
+public class MovieCertOuterWrapper {
 
     @SerializedName("id")
     @Expose
     private Integer id;
     @SerializedName("results")
     @Expose
-    private List<MovieReleaseFeatures> results = null;
+    private List<MovieCertInnerWrapper> results = null;
 
     /**
      * No args constructor for use in serialization
      *
      */
-    public MovieRelease() {
+    public MovieCertOuterWrapper() {
     }
 
     /**
@@ -30,7 +30,7 @@ public class MovieRelease {
      * @param id
      * @param results
      */
-    public MovieRelease(Integer id, List<MovieReleaseFeatures> results) {
+    public MovieCertOuterWrapper(Integer id, List<MovieCertInnerWrapper> results) {
         super();
         this.id = id;
         this.results = results;
@@ -44,11 +44,11 @@ public class MovieRelease {
         this.id = id;
     }
 
-    public List<MovieReleaseFeatures> getResults() {
+    public List<MovieCertInnerWrapper> getResults() {
         return results;
     }
 
-    public void setResults(List<MovieReleaseFeatures> results) {
+    public void setResults(List<MovieCertInnerWrapper> results) {
         this.results = results;
     }
 

@@ -1,10 +1,8 @@
-package com.example.android.popcorn;
+package com.example.android.popcorn.adapters;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +10,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.android.popcorn.R;
 import com.example.android.popcorn.models.Movie;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,7 +46,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     }
 
     /**
-     * Creates a PosterAdapter and passing data into it
+     * Creates a PosterAdapter and passes data into it
      *
      * @param context      The context of the containing activity.
      * @param aList        A list of Movie objects to display.

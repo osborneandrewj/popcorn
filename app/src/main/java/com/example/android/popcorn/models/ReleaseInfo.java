@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  *
  */
 
-public class ReleaseDate {
+public class ReleaseInfo {
 
     @SerializedName("certification")
     @Expose
@@ -31,7 +31,7 @@ public class ReleaseDate {
      * No args constructor for use in serialization
      *
      */
-    public ReleaseDate() {
+    public ReleaseInfo() {
     }
 
     /**
@@ -42,7 +42,7 @@ public class ReleaseDate {
      * @param type
      * @param note
      */
-    public ReleaseDate(String certification, String iso6391, String releaseDate, Integer type, String note) {
+    public ReleaseInfo(String certification, String iso6391, String releaseDate, Integer type, String note) {
         super();
         this.certification = certification;
         this.iso6391 = iso6391;

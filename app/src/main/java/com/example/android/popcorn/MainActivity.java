@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+
+import com.example.android.popcorn.adapters.PosterAdapter;
 import com.example.android.popcorn.models.Movie;
 import com.example.android.popcorn.models.MoviesResults;
 import com.example.android.popcorn.retrofit.TheMovieDbAPI;
@@ -79,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
     private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TheMovieDbAPI mService;
+    private boolean hasSortSettingChanged = false;
 
     private Parcelable mRecyclerViewState;
     private static final String BUNDLE_KEY = "bundle-key";
@@ -116,32 +119,19 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
         mPosterAdapter = new PosterAdapter(this, new ArrayList<Movie>(), this);
         mRecyclerView.setAdapter(mPosterAdapter);
 
-        // Initialize the loader
-//        getSupportLoaderManager().initLoader(1, null, mLoaderCallbacks);
-
         // Swipe refresh functionality
         mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 // Refresh the loader if the network exists
-                if (MyNetworkUtils.doesNetworkConnectionExist(getApplicationContext())) {
                     getMovieData();
-                } else {
-                    mSwipeRefreshLayout.setRefreshing(false
-                    );
-                    showEmptyState();
-                }
+                    mSwipeRefreshLayout.setRefreshing(false);
 
             }
         });
 
-        if (MyNetworkUtils.doesNetworkConnectionExist(this)) {
-            mService = TheMovieDbApiClient.getClient().create(TheMovieDbAPI.class);
-            getMovieData();
-        } else {
-            showEmptyState();
-        }
+        getMovieData();
 
 
     }
@@ -152,7 +142,20 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
      *
      * The switch statement is based on the sort order defined by the user in preferences.
      */
-    private void getMovieData() {
+    public void getMovieData() {
+
+        // Check if a network connection exists. If no network, show empty state
+        if (mService == null) {
+            mService = TheMovieDbApiClient.getClient().create(TheMovieDbAPI.class);
+        }
+
+        // Check for network
+        if (!MyNetworkUtils.doesNetworkConnectionExist(this)) {
+            showEmptyState();
+            return;
+        }
+
+        // Now get the movie poster information
 
         switch (getSortOrder()) {
 
@@ -181,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
                         showEmptyState();
                     }
                 });
+                break;
 
             case SORT_BY_TOP_RATED:
                 Call<MoviesResults> callTopRated = mService.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_KEY);
@@ -201,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
                         showEmptyState();
                     }
                 });
+                break;
         }
 
     }
@@ -300,7 +305,6 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
             sortOrder = DEFAULT_SORT_ORDER;
         }
 
-        Log.v(LOG_TAG, "sortOrder = " + sortOrder);
         return sortOrder;
     }
 

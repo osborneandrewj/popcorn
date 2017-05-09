@@ -1,22 +1,33 @@
 package com.example.android.popcorn;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.android.popcorn.adapters.ReviewAdapter;
 import com.example.android.popcorn.models.Movie;
-import com.example.android.popcorn.models.MovieRelease;
-import com.example.android.popcorn.models.MovieReleaseFeatures;
-import com.example.android.popcorn.models.ReleaseDate;
+import com.example.android.popcorn.models.MovieCertOuterWrapper;
+import com.example.android.popcorn.models.MovieCertInnerWrapper;
+import com.example.android.popcorn.models.MovieReviews;
+import com.example.android.popcorn.models.MovieReviewsWrapper;
+import com.example.android.popcorn.models.MovieVideoWrapper;
+import com.example.android.popcorn.models.MovieVideos;
+import com.example.android.popcorn.models.ReleaseInfo;
 import com.example.android.popcorn.retrofit.TheMovieDbAPI;
 import com.example.android.popcorn.retrofit.TheMovieDbApiClient;
 import com.example.android.popcorn.utilites.MyDateAndTimeUtils;
 import com.squareup.picasso.Picasso;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -27,92 +38,78 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
     private CollapsingToolbarLayout collapsingToolbarLayout;
+    private String mYoutubeKey = "";
+    private TheMovieDbAPI mService;
+    private int mMovieId;
+    private ImageView mBackdropImageView;
+    private ImageView mPosterImage;
+    private TextView mSynopsis;
+    private TextView mReleaseDate;
+    private TextView mRuntime;
+    private TextView mCertification;
+    private TextView mTrailerButton;
+    private TextView mUserRatingInfo;
+
+    private ReviewAdapter mReviewAdapter;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+        collapsingToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        mBackdropImageView = (ImageView) findViewById(R.id.detail_movie_backdrop);
+        mPosterImage = (ImageView) findViewById(R.id.img_poster);
+        mSynopsis = (TextView) findViewById(R.id.tv_summary);
+        mReleaseDate = (TextView) findViewById(R.id.tv_release_date);
+        mRuntime = (TextView) findViewById(R.id.tv_runtime);
+        mCertification = (TextView) findViewById(R.id.tv_movie_rating);
+        mTrailerButton = (TextView) findViewById(R.id.tv_trailer_button);
+        mUserRatingInfo = (TextView) findViewById(R.id.tv_user_rating_info);
+
+        // Setup the reviews section
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_reviews);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mReviewAdapter = new ReviewAdapter(this, new ArrayList<MovieReviews>());
+        mRecyclerView.setAdapter(mReviewAdapter);
 
         // Get intent extras
         // Note: If there are no extras, the error view will be shown
         if (getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();
-            final int movieId = extras.getInt("EXTRA_MOVIE_ID");
+            mMovieId = extras.getInt("EXTRA_MOVIE_ID");
+            Log.v(LOG_TAG, "movieId: " + mMovieId);
 
-            // Setup the toolbar and the title of the activity
-            setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            }
-            collapsingToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
-            collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+            // Setup Retrofit service
+            mService = TheMovieDbApiClient.getClient().create(TheMovieDbAPI.class);
 
-            final ImageView backdropImageView = (ImageView) findViewById(R.id.detail_movie_backdrop);
-            final ImageView posterImage = (ImageView) findViewById(R.id.img_poster);
-            final TextView synopsis = (TextView) findViewById(R.id.tv_summary);
-            final TextView releaseDate = (TextView) findViewById(R.id.tv_release_date);
-            final TextView runtime = (TextView) findViewById(R.id.tv_runtime);
-            final TextView certification = (TextView) findViewById(R.id.tv_movie_rating);
+            // Populate various details such as images, release year, synopsis, etc
+            setMovieDetails();
 
-            TheMovieDbAPI service =
-                    TheMovieDbApiClient.getClient().create(TheMovieDbAPI.class);
+            // Populate the movie certification (content rating, "R", "PG", etc) from the same API
+            setContentRating();
 
-            // Get the movie details from TMDB API using retrofit
-
-            Call<Movie> call = service.getMovieDetails(movieId, BuildConfig.THE_MOVIE_DB_API_KEY);
-
-            call.enqueue(new Callback<Movie>() {
+            // Enable the movie trailer button
+            enableTrailerButton();
+            mTrailerButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onResponse(Call<Movie> call, Response<Movie> response) {
-
-                    // Set various text
-                    synopsis.setText(response.body().getOverview());
-                    collapsingToolbarLayout.setTitle(response.body().getTitle());
-                    releaseDate.setText(response.body().getReleaseDate());
-                    String formattedRuntime = MyDateAndTimeUtils.GetFormattedRuntime(response.body().getRuntime());
-                    runtime.setText(formattedRuntime);
-
-                    // Load the backdrop
-                    Picasso.with(getApplicationContext())
-                            .load(TheMovieDbAPI.BACKDROP_BASE_URL + response.body().getBackdropPath())
-                            .noFade()
-                            .into(backdropImageView);
-
-                    // Load the poster image
-                    Picasso.with(getApplicationContext())
-                            .load(TheMovieDbAPI.POSTER_BASE_URL + response.body().getPosterPath())
-                            .noFade()
-                            .into(posterImage);
-                }
-
-                @Override
-                public void onFailure(Call<Movie> call, Throwable t) {
-                    Log.e(LOG_TAG, "Retrofit failed to get information! Error: " + t);
-                    showErrorView();
+                public void onClick(View v) {
+                    launchYoutubeTrailer();
                 }
             });
 
-            // Get the movie certification (content rating, "R", "PG", etc) from the same API
-
-            Call<MovieRelease> featuresCall = service.getMovieRelease(movieId,
-                    BuildConfig.THE_MOVIE_DB_API_KEY);
-            featuresCall.enqueue(new Callback<MovieRelease>() {
-                @Override
-                public void onResponse(Call<MovieRelease> call, Response<MovieRelease> response) {
-                    Log.v(LOG_TAG, "Trying to get certification..." + response.body().getResults());
-
-                    List<MovieReleaseFeatures> movieReleaseFeatures = response.body().getResults();
-                    certification.setText(getCertification(movieReleaseFeatures));
-                }
-
-                @Override
-                public void onFailure(Call<MovieRelease> call, Throwable t) {
-                    Log.e(LOG_TAG, "Retrofit failed to get information! Error: " + t);
-                    showErrorView();
-                }
-            });
-
+            // Set the user reviews
+            setUserReviews();
         } else {
             // Something went wrong! The intent did not have any extras so no movie ID
             // was available to use
@@ -120,22 +117,179 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Get the movie details from TMDB using retrofit and use this information to populate the
+     * details activity.
+     */
+    private void setMovieDetails() {
+        // Get the movie details from TMDB API using retrofit
+
+        Call<Movie> call = mService.getMovieDetails(mMovieId, BuildConfig.THE_MOVIE_DB_API_KEY);
+        call.enqueue(new Callback<Movie>() {
+            @Override
+            public void onResponse(Call<Movie> call, Response<Movie> response) {
+
+                // Set various text
+                mSynopsis.setText(response.body().getOverview());
+                collapsingToolbarLayout.setTitle(response.body().getTitle());
+                mReleaseDate.setText(response.body().getReleaseDate());
+                String formattedRuntime = MyDateAndTimeUtils.GetFormattedRuntime(response.body().getRuntime());
+                mRuntime.setText(formattedRuntime);
+
+                mUserRatingInfo.setText(String.valueOf(response.body().getVoteAverage()));
+
+                // Load the backdrop
+                Picasso.with(getApplicationContext())
+                        .load(TheMovieDbAPI.BACKDROP_BASE_URL + response.body().getBackdropPath())
+                        .noFade()
+                        .into(mBackdropImageView);
+
+                // Load the poster image
+                Picasso.with(getApplicationContext())
+                        .load(TheMovieDbAPI.POSTER_BASE_URL + response.body().getPosterPath())
+                        .noFade()
+                        .into(mPosterImage);
+            }
+
+            @Override
+            public void onFailure(Call<Movie> call, Throwable t) {
+                Log.e(LOG_TAG, "Retrofit failed to get information! Error: " + t);
+                showErrorView();
+            }
+        });
+    }
+
+    /**
+     * Get the movie certification (content rating, "R", "PG", etc) from TMDB and display this to
+     * the user.
+     */
+    private void setContentRating() {
+
+        Call<MovieCertOuterWrapper> featuresCall = mService.getMovieRelease(mMovieId,
+                BuildConfig.THE_MOVIE_DB_API_KEY);
+        featuresCall.enqueue(new Callback<MovieCertOuterWrapper>() {
+            @Override
+            public void onResponse(Call<MovieCertOuterWrapper> call, Response<MovieCertOuterWrapper> response) {
+
+                List<MovieCertInnerWrapper> movieReleaseFeatures = response.body().getResults();
+                mCertification.setText(getCertification(movieReleaseFeatures));
+            }
+
+            @Override
+            public void onFailure(Call<MovieCertOuterWrapper> call, Throwable t) {
+                Log.e(LOG_TAG, "Retrofit failed to get information! Error: " + t);
+                showErrorView();
+            }
+        });
+    }
+
+    /**
+     * Get the user reviews for this movie from TMDB and populate the reviews section
+     */
+    private void setUserReviews() {
+        Call<MovieReviewsWrapper> reviewsCall = mService.getMovieReviews(mMovieId,
+                BuildConfig.THE_MOVIE_DB_API_KEY);
+        reviewsCall.enqueue(new Callback<MovieReviewsWrapper>() {
+            @Override
+            public void onResponse(Call<MovieReviewsWrapper> call, Response<MovieReviewsWrapper> response) {
+                List<MovieReviews> reviews = response.body().getResults();
+                mReviewAdapter.setReviewsData(reviews);
+                Log.v(LOG_TAG, "Trying to get me some video information! " );
+
+            }
+
+            @Override
+            public void onFailure(Call<MovieReviewsWrapper> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    /**
+     * Get the movie trailer Youtube key from TMDB and use it to enable the "Play Trailer" button
+     * to send the user to the appropriate Youtube video.
+     */
+    private void enableTrailerButton() {
+        // Get the trailer information
+        // The goal of this section is to create a Youtube address that points to this movie's
+        // trailer
+        final String youtubeTrailerAddressString = "https:www.youtube.com/watch?v=";
+        Call<MovieVideoWrapper> videosCall = mService.getMovieVideos(mMovieId,
+                BuildConfig.THE_MOVIE_DB_API_KEY);
+        videosCall.enqueue(new Callback<MovieVideoWrapper>() {
+            @Override
+            public void onResponse(Call<MovieVideoWrapper> call, Response<MovieVideoWrapper> response) {
+
+                List<MovieVideos> videos = response.body().getResults();
+                mYoutubeKey = getYoutubeKey(videos);
+            }
+
+            @Override
+            public void onFailure(Call<MovieVideoWrapper> call, Throwable t) {
+                Log.e(LOG_TAG, "Retrofit failed to get information! Error: " + t);
+                showErrorView();
+            }
+        });
+
+    }
+
     private void showErrorView() {
         // TODO: finish error view
     }
 
-    private String getCertification(List<MovieReleaseFeatures> list) {
+    /**
+     * Get the movie content rating ("G", "R", "PG-13", etc) for a specific movie.
+     * Note: this method only return the US content rating. For additional functionality this
+     * should reference the user's location and attempt to get rating information from that.
+     *
+     * @param list
+     * @return the String representation of this movie's content rating
+     */
+    private String getCertification(List<MovieCertInnerWrapper> list) {
 
-        List<ReleaseDate> releaseDate;
+        List<ReleaseInfo> releaseInfo;
         String certification = "";
 
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getIso31661().equals("US")) {
-                releaseDate = list.get(i).getReleaseDates();
-                certification = releaseDate.get(0).getCertification();
+                releaseInfo = list.get(i).getReleaseInfos();
+                certification = releaseInfo.get(0).getCertification();
             }
         }
         return certification;
+    }
 
+    /**
+     * Get the movie Youtube key that we can use to complete the Youtube movie trailer address (i.e.
+     * https://www.youtube.com/watch?v=lEEmORyxpho where "lEEmORyxpho" is the key).
+     *
+     * @param list is the list of movie information obtained from TMDB
+     * @return the Youtube key which will be used to build a Youtube address
+     */
+    private String getYoutubeKey(List<MovieVideos> list) {
+        String youtubeKey = "";
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getType().equals("Trailer")) {
+                youtubeKey = list.get(i).getKey();
+                return youtubeKey;
+            } else {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Use the Youtube key to build the web address and launch the movie trailer.
+     */
+    private void launchYoutubeTrailer() {
+        // Build the Uri String
+        String youtubeAddress = "https:www.youtube.com/watch?v=";
+        youtubeAddress = youtubeAddress + mYoutubeKey;
+
+        Intent launchTrailerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeAddress));
+        startActivity(launchTrailerIntent);
     }
 }

@@ -52,9 +52,8 @@
                 android:id="@+id/img_poster"
                 android:layout_width="185dp"
                 android:layout_height="278dp"
-                android:layout_marginStart="0dp"
-                app:layout_constraintLeft_toLeftOf="@+id/tv_summary"
                 android:layout_marginTop="24dp"
+                app:layout_constraintLeft_toLeftOf="@+id/tv_summary"
                 app:layout_constraintTop_toBottomOf="@+id/tv_summary" />
 
             <TextView
@@ -64,15 +63,16 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/movie_rating_border"
-                android:text="R"
-                android:paddingTop="0dp"
-                android:paddingRight="5dp"
                 android:paddingBottom="0dp"
                 android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="0dp"
+                android:text="R"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="R" />
+                tools:text="R"
+                android:layout_marginStart="16dp" />
 
             <TextView
                 android:id="@+id/tv_summary"
@@ -81,37 +81,93 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif"
                 android:paddingEnd="8dp"
                 android:paddingRight="8dp"
-                android:fontFamily="sans-serif"
-                android:textSize="16sp"
                 android:textColor="@color/colorWhiteText"
+                android:textSize="16sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_movie_rating"
-                tools:text="@string/test_description" />
+                tools:text="@string/test_description"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp" />
 
             <TextView
                 android:id="@+id/tv_release_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="0dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintLeft_toRightOf="@+id/tv_movie_rating"
                 app:layout_constraintTop_toTopOf="@+id/tv_movie_rating"
-                tools:text="2017" />
+                tools:text="2017"
+                android:layout_marginStart="16dp" />
 
             <TextView
                 android:id="@+id/tv_runtime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="0dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_movie_rating"
-                tools:text="2 hrs 9 mins" />
+                tools:text="2 hrs 9 mins"
+                android:layout_marginEnd="16dp" />
+
+            <TextView
+                android:id="@+id/tv_trailer_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/colorPrimaryDark"
+                android:padding="16dp"
+                android:paddingEnd="24dp"
+                android:paddingStart="24dp"
+                android:text="@string/youtube_trailer_label"
+                app:layout_constraintLeft_toRightOf="@+id/img_poster"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/img_poster"
+                tools:text="Play Trailer"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/tv_user_rating_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="160dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintLeft_toRightOf="@+id/tv_reviews_label"
+                tools:text="6 / 10"
+                tools:layout_editor_absoluteY="377dp" />
+
+            <TextView
+                android:id="@+id/tv_reviews_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="8dp"
+                android:text="Reviews"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:layout_constraintLeft_toLeftOf="@+id/img_poster"
+                app:layout_constraintTop_toBottomOf="@+id/img_poster"
+                tools:text="Reviews" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_reviews"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="-45dp"
+                android:padding="16dp"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_reviews_label">
+
+            </android.support.v7.widget.RecyclerView>
 
         </android.support.constraint.ConstraintLayout>
 
