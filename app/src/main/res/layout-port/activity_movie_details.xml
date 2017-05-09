@@ -138,13 +138,15 @@
                 android:id="@+id/tv_user_rating_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                app:layout_constraintLeft_toLeftOf="@+id/tv_trailer_button"
-                app:layout_constraintTop_toBottomOf="@+id/tv_trailer_button"
-                tools:text="5.4" />
+                tools:text="5.4"
+                app:layout_constraintLeft_toRightOf="@+id/yellowRatingStar"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="0dp"
+                app:layout_constraintTop_toBottomOf="@+id/yellowRatingStar"
+                android:layout_marginBottom="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/yellowRatingStar" />
 
             <TextView
                 android:id="@+id/tv_reviews_label"
@@ -159,20 +161,6 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 android:layout_marginRight="8dp"
                 app:layout_constraintRight_toRightOf="parent" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerview_reviews"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
-                android:layout_marginTop="0dp"
-                android:padding="16dp"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_reviews_label">
-
-            </android.support.v7.widget.RecyclerView>
 
             <TextView
                 android:id="@+id/textView"
@@ -194,12 +182,91 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
                 android:layout_marginRight="0dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:textColorLink="@android:color/darker_gray"
-                app:layout_constraintLeft_toRightOf="@+id/textView"
-                app:layout_constraintRight_toLeftOf="@+id/tv_user_rating_info"
+                app:layout_constraintHorizontal_bias="0.514"
+                app:layout_constraintLeft_toLeftOf="@+id/yellowRatingStar"
+                app:layout_constraintRight_toRightOf="@+id/textView"
                 app:layout_constraintTop_toBottomOf="@+id/tv_user_rating_info"
-                tools:text="11,598" />
+                tools:text="11,598)" />
+
+            <ImageView
+                android:id="@+id/yellowRatingStar"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginTop="32dp"
+                app:layout_constraintTop_toBottomOf="@+id/grayRatingStar"
+                app:srcCompat="@drawable/rating_star_yellow"
+                app:layout_constraintLeft_toRightOf="@+id/grayRatingStar"
+                android:layout_marginLeft="0dp"
+                app:layout_constraintRight_toLeftOf="@+id/grayRatingStar"
+                android:layout_marginRight="0dp" />
+
+            <ImageView
+                android:id="@+id/grayRatingStar"
+                android:layout_width="30dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="32dp"
+                app:layout_constraintLeft_toLeftOf="@+id/tv_trailer_button"
+                app:layout_constraintTop_toBottomOf="@+id/tv_trailer_button"
+                app:srcCompat="@drawable/rating_star_outline" />
+
+            <TextView
+                android:id="@+id/tv_favorite_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:padding="16dp"
+                android:text="@string/favorite_this_label"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintBottom_toTopOf="@+id/grayRatingStar"
+                app:layout_constraintLeft_toRightOf="@+id/grayRatingStar"
+                app:layout_constraintTop_toBottomOf="@+id/grayRatingStar"
+                tools:text="Favorites"
+                app:layout_constraintVertical_bias="0.48" />
+
+            <TextView
+                android:id="@+id/tv_rating_total_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_reviews_label_left"
+                tools:text="("
+                app:layout_constraintRight_toLeftOf="@+id/tv_ratings_total"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/tv_ratings_total"
+                android:layout_marginTop="0dp"
+                app:layout_constraintTop_toBottomOf="@+id/tv_ratings_total" />
+
+            <TextView
+                android:id="@+id/tv_rating_total_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_reviews_label_right"
+                tools:text=")"
+                app:layout_constraintLeft_toRightOf="@+id/tv_ratings_total"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="0dp"
+                app:layout_constraintTop_toBottomOf="@+id/tv_ratings_total"
+                android:layout_marginBottom="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/tv_ratings_total" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_reviews"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="-82dp"
+                android:padding="16dp"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_reviews_label">
+
+            </android.support.v7.widget.RecyclerView>
 
         </android.support.constraint.ConstraintLayout>
 

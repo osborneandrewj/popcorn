@@ -34,6 +34,9 @@
     <string name="youtube_trailer_label">Play Trailer</string>
     <string name="user_reviews_label">User Reviews</string>
     <string name="ratings_label"> / 10</string>
+    <string name="favorite_this_label">Favorites</string>
+    <string name="user_reviews_label_left">(</string>
+    <string name="user_reviews_label_right">)</string>
 
 
 
