@@ -329,11 +329,14 @@ public class MainActivity extends AppCompatActivity implements PosterAdapter.Pos
 
         // Retrieve the list
         mRecyclerViewState = savedInstanceState.getParcelable(BUNDLE_KEY);
+
+        mPosterAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         if (mRecyclerViewState != null) {
             mLayoutManager.onRestoreInstanceState(mRecyclerViewState);
         }

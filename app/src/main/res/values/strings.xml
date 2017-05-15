@@ -23,12 +23,12 @@
     <!--Settings menu options-->
     <string name="settings_sort_order_key" translatable="false">sort_order_key</string>
     <string name="settings_sort_order">Sort Order</string>
-    <string name="settings_sort_order_summary">How do you want your movies sorted?</string>
+    <string name="settings_sort_order_summary">Top rated or most popular?</string>
     <!--Sort according to popularity by default-->
     <string name="settings_sort_order_default">0</string>
 
     <!-- - - - - - - - - - - - - - - - - - -->
-    <!--     Used in MovieDetailActivity    -->
+    <!--     Used in MovieDetailActivity   -->
     <!-- - - - - - - - - - - - - - - - - - -->
 
     <string name="youtube_trailer_label">Play Trailer</string>

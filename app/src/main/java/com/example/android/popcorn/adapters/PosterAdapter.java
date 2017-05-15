@@ -3,6 +3,7 @@ package com.example.android.popcorn.adapters;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,11 @@ import java.util.List;
  *
  */
 
+// TODO: Change this to a DiscoverFragment
+// TODO: Change the MainActivity to include a viewpager tab layout
+// TODO: Create a FavoritesFragment
+// TODO: Move all dimensions to dimens.xml
+
 public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdapterViewHolder> {
 
     private static final String LOG_TAG = PosterAdapter.class.getSimpleName();
@@ -29,7 +35,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     private LayoutInflater mInflater;
     private List<Movie> mMovieList;
     /* Used to set the height of poster images */
-    private int mHeight;
+    private int mViewContainerHeight;
     /* An on-click handler for interacting with the PosterAdapter */
     private final PosterAdapterOnClickHandler mClickHandler;
 
@@ -74,38 +80,21 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     public PosterAdapterViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
 
         mContext = parent.getContext();
+        View view = mInflater.inflate(R.layout.poster_item, parent, false);
+        final PosterAdapterViewHolder viewHolder = new PosterAdapterViewHolder(view);
+        mViewContainerHeight = parent.getMeasuredHeight();
 
+        // Change the poster size depending on the orientation of the screen
+        // Note: this might change depending on landscape version
+        int desiredHeight = 0;
         if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            // Make each poster take up half the size of the screen
-            // This is accomplished by measuring the LinearLayout containing the ImageView and
-            // dividing that by half
-            View view = mInflater.inflate(R.layout.poster_item, parent, false);
-            final PosterAdapterViewHolder viewHolder = new PosterAdapterViewHolder(view);
-            parent.post(new Runnable() {
-                @Override
-                public void run() {
-                    mHeight = parent.getMeasuredHeight() / 2;
-                    View view = viewHolder.mContainer;
-                    view.getLayoutParams().height = mHeight;
-                }
-            });
-            return viewHolder;
+            desiredHeight = mViewContainerHeight / 2;
         } else {
-            View view = mInflater.inflate(R.layout.poster_item, parent, false);
-
-            final PosterAdapterViewHolder viewHolder = new PosterAdapterViewHolder(view);
-            // Make each poster take up the entire screen
-            parent.post(new Runnable() {
-                @Override
-                public void run() {
-                    mHeight = parent.getMeasuredHeight();
-                    View view = viewHolder.mContainer;
-                    view.getLayoutParams().height = mHeight;
-
-                }
-            });
-            return viewHolder;
+            desiredHeight = mViewContainerHeight;
         }
+        viewHolder.mContainer.getLayoutParams().height = desiredHeight;
+
+        return viewHolder;
     }
 
     /**
