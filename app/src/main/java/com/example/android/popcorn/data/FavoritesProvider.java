@@ -96,7 +96,7 @@ public class FavoritesProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case FAVORITES:
-                return insertMovie(uri, contentValues);
+                return insertFavoriteMovie(uri, contentValues);
             default:
                 // We do not want this case
                 throw new IllegalArgumentException("Insertion not supported for this URI: " + uri);
@@ -108,11 +108,11 @@ public class FavoritesProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case FAVORITES:
-                return deleteFavorite(uri, s, strings);
+                return deleteFavoriteMovie(uri, s, strings);
             case FAVORITE_ITEM:
                 s = FavoritesContract.FavoritesEntry._ID + "=?";
                 strings = new String[] {String.valueOf(ContentUris.parseId(uri))};
-                return deleteFavorite(uri, s, strings);
+                return deleteFavoriteMovie(uri, s, strings);
             default:
                 throw new IllegalArgumentException("Deletion is not allowed for " + uri);
         }
@@ -127,7 +127,7 @@ public class FavoritesProvider extends ContentProvider {
         return 0;
     }
 
-    private Uri insertMovie(Uri uri, ContentValues values) {
+    private Uri insertFavoriteMovie(Uri uri, ContentValues values) {
 
         SQLiteDatabase database = mFavoritesDbHelper.getWritableDatabase();
 
@@ -142,9 +142,7 @@ public class FavoritesProvider extends ContentProvider {
         return ContentUris.withAppendedId(uri, id_value);
     }
 
-    private int deleteFavorite(Uri uri,
-                               String selection,
-                               String[] selectionArgs) {
+    private int deleteFavoriteMovie(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase database = mFavoritesDbHelper.getWritableDatabase();
 
         int numberOfRowsDeleted = database.delete(FavoritesContract.FavoritesEntry.TABLE_NAME,

@@ -2,6 +2,7 @@ package com.example.android.popcorn;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -118,15 +119,16 @@ public class MovieDetailActivity extends AppCompatActivity {
             mFavoriteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    addThisMovieToFavorites();
+                    addOrDeleteThisMovieFromFavorites();
                 }
             });
             mFavoriteStar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    addThisMovieToFavorites();
+                    addOrDeleteThisMovieFromFavorites();
                 }
             });
+            updateFavoriteStarImage();
 
 
         } else {
@@ -317,29 +319,60 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void updateFavoriteStarImage() {
         // TODO: query database
+
+        String[] projection = {
+                FavoritesContract.FavoritesEntry._ID,
+                FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID};
+
+        String selection = FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID + "=?";
+        String[] selectionArgs = {String.valueOf(mMovieId)};
+        Log.v(LOG_TAG, "selectionArgs[0]: " + selectionArgs[0]);
+        Cursor cursor =
+                getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,
+                projection,
+                selection,
+                selectionArgs,
+                null);
+        int count = cursor.getCount();
+        Log.v(LOG_TAG, "Cursor count = " + count);
+        if (count > 0) {
+            isFavorite = true;
+            mFavoriteStar.setImageResource(R.drawable.rating_star_yellow);
+        } else {
+            isFavorite = false;
+            mFavoriteStar.setImageResource(R.drawable.rating_star_outline);
+
+
+        }
+
+
     }
 
-    private void addThisMovieToFavorites() {
+    private void addOrDeleteThisMovieFromFavorites() {
+
+        ContentValues values = new ContentValues();
+        values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, mMovieId);
+        values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_NAME, mMovieTitle);
+        values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH, mPosterPath);
 
         if (!isFavorite) {
             isFavorite = true;
-            mFavoriteStar.setImageResource(R.drawable.rating_star_yellow);
-
-            ContentValues values = new ContentValues();
-            values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, mMovieId);
-            values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_NAME, mMovieTitle);
-            values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH, mPosterPath);
 
             Uri newUri = getContentResolver().insert(FavoritesContract.FavoritesEntry.CONTENT_URI,
                     values);
             Log.v(LOG_TAG, "new movie inserted! " + mPosterPath);
-
+            updateFavoriteStarImage();
             return;
         }
 
         if (isFavorite) {
             isFavorite = false;
-            mFavoriteStar.setImageResource(R.drawable.rating_star_outline);
+            String[] selectionArgs = {String.valueOf(mMovieId)};
+
+            Uri newUri = getContentResolver().delete(FavoritesContract.FavoritesEntry.CONTENT_URI,
+                    FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID ,
+                    selectionArgs);
+            updateFavoriteStarImage();
         }
 
     }

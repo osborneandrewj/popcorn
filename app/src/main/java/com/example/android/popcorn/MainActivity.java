@@ -76,7 +76,6 @@ import retrofit2.Response;
  */
 
 
-// TODO: Create a FavoritesFragment
 // TODO: Move all dimensions to dimens.xml
 // TODO: Create a tablet layout
 

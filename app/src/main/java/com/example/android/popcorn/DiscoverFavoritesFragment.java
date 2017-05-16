@@ -18,17 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ListView;
 import android.widget.TextView;
-
-import com.example.android.popcorn.R;
-import com.example.android.popcorn.adapters.FavoritesCursorAdapter;
 import com.example.android.popcorn.adapters.FavoritesPosterAdapter;
-import com.example.android.popcorn.adapters.PosterAdapter;
 import com.example.android.popcorn.data.FavoritesContract;
-import com.example.android.popcorn.models.Movie;
-
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
