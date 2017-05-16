@@ -2,6 +2,8 @@ package com.example.android.popcorn.adapters;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +14,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.android.popcorn.R;
+import com.example.android.popcorn.data.FavoritesContract;
 import com.example.android.popcorn.models.Movie;
+import com.example.android.popcorn.utilites.MyNetworkUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -23,13 +27,13 @@ import java.util.List;
  */
 
 
-public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdapterViewHolder> {
+public class FavoritesPosterAdapter extends RecyclerView.Adapter<FavoritesPosterAdapter.PosterAdapterViewHolder> {
 
     private static final String LOG_TAG = PosterAdapter.class.getSimpleName();
 
     private Context mContext;
     private LayoutInflater mInflater;
-    private List<Movie> mMovieList;
+    private Cursor mCursor;
     /* Used to set the height of poster images */
     private int mViewContainerHeight;
     /* An on-click handler for interacting with the PosterAdapter */
@@ -48,16 +52,16 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     }
 
     /**
-     * Creates a PosterAdapter and passes data into it
+     * Creates a FavoritesPosterAdapter and passes data into it
      *
      * @param context      The context of the containing activity.
-     * @param aList        A list of Movie objects to display.
      * @param clickHandler The on-click handler that is called when a poster image is clicked.
      */
-    public PosterAdapter(Context context, List<Movie> aList,
-                         PosterAdapterOnClickHandler clickHandler) {
+    public FavoritesPosterAdapter(Context context,
+                                  Cursor cursor,
+                                  PosterAdapterOnClickHandler clickHandler) {
         mInflater = LayoutInflater.from(context);
-        mMovieList = aList;
+        mCursor = cursor;
         mClickHandler = clickHandler;
     }
 
@@ -103,11 +107,19 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
     public void onBindViewHolder(PosterAdapterViewHolder holder, int position) {
 
         // Get the current object
-        Movie currentMovie = mMovieList.get(position);
+        //Movie currentMovie = mMovieList.get(position);
 
         // test picture
+//        Picasso.with(mContext)
+//                .load(currentMovie.getPosterUri())
+//                .into(holder.mPosterImage);
+
+        mCursor.moveToPosition(position);
+        String posterString = mCursor.getString(
+                mCursor.getColumnIndexOrThrow(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH));
+        Uri posterUri = MyNetworkUtils.getUriFromPosterPath(posterString);
         Picasso.with(mContext)
-                .load(currentMovie.getPosterUri())
+                .load(posterUri)
                 .into(holder.mPosterImage);
     }
 
@@ -118,7 +130,11 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      */
     @Override
     public int getItemCount() {
-        return mMovieList.size();
+        if (mCursor != null) {
+            return mCursor.getCount();
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -148,17 +164,19 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            Movie currentMovie = mMovieList.get(adapterPosition);
+            mCursor.moveToPosition(adapterPosition);
+            int currentMovieId = mCursor.getInt(mCursor.getColumnIndexOrThrow(
+                    FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID));
 
             // Did the user click A) the poster image or click B) the detail button?
             if (view == mDetailTextView) {
                 // B) The user clicked the detail button
                 mClickHandler.onDetailButtonClick(
                         mDetailTextView,
-                        currentMovie.getId());
+                        currentMovieId);
             } else {
                 // A) The user clicked on the poster itself
-                mClickHandler.onClick(view, mDetailTextView, currentMovie.getTitle());
+                mClickHandler.onClick(view, mDetailTextView, "Testing");
             }
         }
     }
@@ -167,10 +185,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
      * This method is used to pass a new list of Movie objects onto the PosterAdapter and
      * refresh the view.
      *
-     * @param aList The new list of Movie objects to display.
      */
-    public void setMoviePosterData(List<Movie> aList) {
-        mMovieList = aList;
+    public void setMoviePosterData(Cursor cursor) {
+        mCursor = cursor;
         notifyDataSetChanged();
     }
 

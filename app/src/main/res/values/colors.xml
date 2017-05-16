@@ -10,4 +10,5 @@
     <!--A slightly transparent color for the detail button-->
     <color name="colorDetailButtonTransparent">#E1c62828</color>
     <color name="colorPosterBackground">#000000</color>
+    <color name="colorPrimaryDarkSelector">#ec4545</color>
 </resources>

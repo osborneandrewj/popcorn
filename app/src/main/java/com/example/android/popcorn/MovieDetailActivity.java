@@ -1,5 +1,6 @@
 package com.example.android.popcorn;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.popcorn.adapters.ReviewAdapter;
+import com.example.android.popcorn.data.FavoritesContract;
 import com.example.android.popcorn.models.Movie;
 import com.example.android.popcorn.models.MovieCertOuterWrapper;
 import com.example.android.popcorn.models.MovieCertInnerWrapper;
@@ -53,6 +55,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private boolean isFavorite;
     private TextView mFavoriteButton;
     private ImageView mFavoriteStar;
+    private String mMovieTitle;
+    private String mPosterPath;
 
     private ReviewAdapter mReviewAdapter;
     private RecyclerView mRecyclerView;
@@ -150,6 +154,9 @@ public class MovieDetailActivity extends AppCompatActivity {
                 String formattedRuntime = MyDateAndTimeUtils.GetFormattedRuntime(response.body().getRuntime());
                 mRuntime.setText(formattedRuntime);
                 mUserRatingInfo.setText(String.valueOf(response.body().getVoteAverage()));
+
+                mMovieTitle = response.body().getTitle();
+                mPosterPath = response.body().getPosterPath();
 
                 // Load the backdrop image
                 Picasso.with(getApplicationContext())
@@ -308,11 +315,25 @@ public class MovieDetailActivity extends AppCompatActivity {
         startActivity(launchTrailerIntent);
     }
 
+    private void updateFavoriteStarImage() {
+        // TODO: query database
+    }
+
     private void addThisMovieToFavorites() {
 
         if (!isFavorite) {
             isFavorite = true;
             mFavoriteStar.setImageResource(R.drawable.rating_star_yellow);
+
+            ContentValues values = new ContentValues();
+            values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, mMovieId);
+            values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_NAME, mMovieTitle);
+            values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH, mPosterPath);
+
+            Uri newUri = getContentResolver().insert(FavoritesContract.FavoritesEntry.CONTENT_URI,
+                    values);
+            Log.v(LOG_TAG, "new movie inserted! " + mPosterPath);
+
             return;
         }
 
