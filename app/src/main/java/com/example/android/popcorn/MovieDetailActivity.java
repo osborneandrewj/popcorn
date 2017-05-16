@@ -3,6 +3,7 @@ package com.example.android.popcorn;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -53,7 +54,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView mTrailerButton;
     private TextView mUserRatingInfo;
     private TextView mUserRatingTotal;
-    private boolean isFavorite;
+    private boolean mIsFavorite;
     private TextView mFavoriteButton;
     private ImageView mFavoriteStar;
     private String mMovieTitle;
@@ -98,6 +99,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         // Favorites
         mFavoriteButton = (TextView) findViewById(R.id.tv_favorite_label);
         mFavoriteStar = (ImageView) findViewById(R.id.userRatingStar);
+        isThisMovieInFavorites();
 
         if (getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();
@@ -318,34 +320,43 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private void updateFavoriteStarImage() {
-        // TODO: query database
+        if (mIsFavorite) {
+            mFavoriteStar.setImageResource(R.drawable.rating_star_yellow);
+        } else if (!mIsFavorite) {
+            mFavoriteStar.setImageResource(R.drawable.rating_star_outline);
+        }
 
+    }
+
+    private void isThisMovieInFavorites(){
         String[] projection = {
                 FavoritesContract.FavoritesEntry._ID,
                 FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID};
 
         String selection = FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID + "=?";
         String[] selectionArgs = {String.valueOf(mMovieId)};
-        Log.v(LOG_TAG, "selectionArgs[0]: " + selectionArgs[0]);
         Cursor cursor =
-                getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,
-                projection,
-                selection,
-                selectionArgs,
-                null);
-        int count = cursor.getCount();
-        Log.v(LOG_TAG, "Cursor count = " + count);
-        if (count > 0) {
-            isFavorite = true;
-            mFavoriteStar.setImageResource(R.drawable.rating_star_yellow);
-        } else {
-            isFavorite = false;
-            mFavoriteStar.setImageResource(R.drawable.rating_star_outline);
-
-
+                getContentResolver().query(
+                        FavoritesContract.FavoritesEntry.CONTENT_URI,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            int count = cursor.getCount();
+            Log.v(LOG_TAG, "Cursor.getCount() = " + count);
+            switch (count) {
+                case 0:
+                    mIsFavorite = false;
+                    break;
+                default:
+                    mIsFavorite = true;
+                    break;
+            }
+            Log.v(LOG_TAG, "Is movie a favorite? " + mIsFavorite);
+            cursor.close();
         }
-
-
     }
 
     private void addOrDeleteThisMovieFromFavorites() {
@@ -355,9 +366,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_NAME, mMovieTitle);
         values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH, mPosterPath);
 
-        if (!isFavorite) {
-            isFavorite = true;
-
+        if (!mIsFavorite) {
+            mIsFavorite = true;
             Uri newUri = getContentResolver().insert(FavoritesContract.FavoritesEntry.CONTENT_URI,
                     values);
             Log.v(LOG_TAG, "new movie inserted! " + mPosterPath);
@@ -365,13 +375,13 @@ public class MovieDetailActivity extends AppCompatActivity {
             return;
         }
 
-        if (isFavorite) {
-            isFavorite = false;
+        if (mIsFavorite) {
+            mIsFavorite = false;
             String[] selectionArgs = {String.valueOf(mMovieId)};
 
-            Uri newUri = getContentResolver().delete(FavoritesContract.FavoritesEntry.CONTENT_URI,
-                    FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID ,
-                    selectionArgs);
+//            Uri newUri = getContentResolver().delete(FavoritesContract.FavoritesEntry.CONTENT_URI,
+//                    FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
+//                    selectionArgs);
             updateFavoriteStarImage();
         }
 
