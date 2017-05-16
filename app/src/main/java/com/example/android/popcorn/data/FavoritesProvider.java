@@ -105,7 +105,18 @@ public class FavoritesProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case FAVORITES:
+                return deleteFavorite(uri, s, strings);
+            case FAVORITE_ITEM:
+                s = FavoritesContract.FavoritesEntry._ID + "=?";
+                strings = new String[] {String.valueOf(ContentUris.parseId(uri))};
+                return deleteFavorite(uri, s, strings);
+            default:
+                throw new IllegalArgumentException("Deletion is not allowed for " + uri);
+        }
+
     }
 
     @Override
@@ -129,5 +140,19 @@ public class FavoritesProvider extends ContentProvider {
 
         getContext().getContentResolver().notifyChange(uri, null);
         return ContentUris.withAppendedId(uri, id_value);
+    }
+
+    private int deleteFavorite(Uri uri,
+                               String selection,
+                               String[] selectionArgs) {
+        SQLiteDatabase database = mFavoritesDbHelper.getWritableDatabase();
+
+        int numberOfRowsDeleted = database.delete(FavoritesContract.FavoritesEntry.TABLE_NAME,
+                selection,
+                selectionArgs);
+
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return numberOfRowsDeleted;
     }
 }
