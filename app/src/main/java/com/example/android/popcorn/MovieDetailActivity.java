@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,9 +41,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MovieDetailActivity extends AppCompatActivity {
+public class MovieDetailActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
+    private static final int FAVORITES_LOADER_ID = 1250;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private String mYoutubeKey = "";
     private TheMovieDbAPI mService;
@@ -69,7 +74,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-        collapsingToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         if (getSupportActionBar() != null) {
@@ -99,7 +104,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         // Favorites
         mFavoriteButton = (TextView) findViewById(R.id.tv_favorite_label);
         mFavoriteStar = (ImageView) findViewById(R.id.userRatingStar);
-        isThisMovieInFavorites();
 
         if (getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();
@@ -130,8 +134,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                     addOrDeleteThisMovieFromFavorites();
                 }
             });
-            updateFavoriteStarImage();
-
+            getSupportLoaderManager().initLoader(FAVORITES_LOADER_ID, null, this);
 
         } else {
             // Something went wrong! The intent did not have any extras so no movie ID
@@ -220,7 +223,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 mReviewAdapter.setReviewsData(reviews);
 
                 mUserRatingTotal.setText(String.valueOf(response.body().getTotalResults()));
-                Log.v(LOG_TAG, "Trying to get me some video information! " );
+                Log.v(LOG_TAG, "Trying to get me some video information! ");
 
             }
 
@@ -328,49 +331,65 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     }
 
-    private void isThisMovieInFavorites(){
+    private void isThisMovieInFavorites(int inDatabase) {
+        if (inDatabase >= 1) {
+            mIsFavorite = true;
+        } else {
+            mIsFavorite = false;
+        }
+
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
         String[] projection = {
                 FavoritesContract.FavoritesEntry._ID,
                 FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID};
 
         String selection = FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID + "=?";
         String[] selectionArgs = {String.valueOf(mMovieId)};
-        Cursor cursor =
-                getContentResolver().query(
-                        FavoritesContract.FavoritesEntry.CONTENT_URI,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            int count = cursor.getCount();
-            Log.v(LOG_TAG, "Cursor.getCount() = " + count);
-            switch (count) {
-                case 0:
-                    mIsFavorite = false;
-                    break;
-                default:
-                    mIsFavorite = true;
-                    break;
+
+        return new CursorLoader(this,
+                FavoritesContract.FavoritesEntry.CONTENT_URI,
+                projection,
+                selection,
+                selectionArgs,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        int count = 0;
+        if (data != null) {
+            count = data.getCount();
+            if (count > 0) {
+                data.moveToFirst();
+                data.getInt(
+                        data.getColumnIndexOrThrow(FavoritesContract.FavoritesEntry._ID));
             }
-            Log.v(LOG_TAG, "Is movie a favorite? " + mIsFavorite);
-            cursor.close();
+            isThisMovieInFavorites(count);
+            updateFavoriteStarImage();
+            Log.v(LOG_TAG, "count = " + count);
         }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 
     private void addOrDeleteThisMovieFromFavorites() {
 
-        ContentValues values = new ContentValues();
-        values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, mMovieId);
-        values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_NAME, mMovieTitle);
-        values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH, mPosterPath);
-
         if (!mIsFavorite) {
             mIsFavorite = true;
-            Uri newUri = getContentResolver().insert(FavoritesContract.FavoritesEntry.CONTENT_URI,
+            ContentValues values = new ContentValues();
+            values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, mMovieId);
+            values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_NAME, mMovieTitle);
+            values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH, mPosterPath);
+            Uri newUri = getContentResolver().insert(
+                    FavoritesContract.FavoritesEntry.CONTENT_URI,
                     values);
-            Log.v(LOG_TAG, "new movie inserted! " + mPosterPath);
             updateFavoriteStarImage();
             return;
         }
@@ -378,12 +397,12 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (mIsFavorite) {
             mIsFavorite = false;
             String[] selectionArgs = {String.valueOf(mMovieId)};
-
-//            Uri newUri = getContentResolver().delete(FavoritesContract.FavoritesEntry.CONTENT_URI,
-//                    FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
-//                    selectionArgs);
+            int numberOfDeletedMovies = getContentResolver().delete(
+                    FavoritesContract.FavoritesEntry.CONTENT_URI,
+                    FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
+                    selectionArgs);
+            Log.v(LOG_TAG, "Number of movies deleted; " + numberOfDeletedMovies);
             updateFavoriteStarImage();
         }
-
     }
 }

@@ -104,13 +104,17 @@ public class FavoritesProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
+    public int delete(@NonNull Uri uri,
+                      @Nullable String s,
+                      @Nullable String[] strings) {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case FAVORITES:
+                Log.v(LOG_TAG, "Deleting FAVORITES...");
                 return deleteFavoriteMovie(uri, s, strings);
             case FAVORITE_ITEM:
-                s = FavoritesContract.FavoritesEntry._ID + "=?";
+                Log.v(LOG_TAG, "Deleting FAVORITE_ITEM...");
+                s = FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID + "=?";
                 strings = new String[] {String.valueOf(ContentUris.parseId(uri))};
                 return deleteFavoriteMovie(uri, s, strings);
             default:
