@@ -39,12 +39,10 @@ public class DiscoverTopRatedFragment extends Fragment implements PosterAdapter.
 
     private static final String LOG_TAG = DiscoverPopularFragment.class.getSimpleName();
 
-    private static final String DEFAULT_SORT_ORDER = "0";
-    private static final String SORT_BY_POPULARITY = "0";
-    private static final String SORT_BY_TOP_RATED = "1";
-
     private static final int TWO_POSTERS_WIDE = 2;
     private static final int THREE_POSTERS_WIDE = 3;
+    private static final int FOUR_POSTERS_WIDE = 4;
+    private static final int FIVE_POSTERS_WIDE = 5;
 
     private PosterAdapter mPosterAdapter;
     private RecyclerView mRecyclerView;
@@ -67,8 +65,6 @@ public class DiscoverTopRatedFragment extends Fragment implements PosterAdapter.
 
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_activity);
-        // Get default search settings
-        PreferenceManager.setDefaultValues(getContext(), R.xml.preferences, false);
 
         // Hide the empty state TextView
         mEmptyStateTextView = (TextView) view.findViewById(R.id.tv_empty_state);
@@ -78,11 +74,21 @@ public class DiscoverTopRatedFragment extends Fragment implements PosterAdapter.
 
         // Use GridLayoutManger to display the grid of movie posters
         // Note: in landscape mode, there will be three columns, not two
+        int screenSize = getContext().getResources().getConfiguration().screenWidthDp;
+        Log.v(LOG_TAG, "screenSize = " + screenSize);
         if (this.getResources().getConfiguration()
                 .orientation == Configuration.ORIENTATION_PORTRAIT) {
-            mLayoutManager = new GridLayoutManager(getContext(), TWO_POSTERS_WIDE);
+            if (screenSize >= 600) {
+                mLayoutManager = new GridLayoutManager(getContext(), THREE_POSTERS_WIDE);
+            } else {
+                mLayoutManager = new GridLayoutManager(getContext(), TWO_POSTERS_WIDE);
+            }
         } else {
-            mLayoutManager = new GridLayoutManager(getContext(), THREE_POSTERS_WIDE);
+            if (screenSize >= 1024) {
+                mLayoutManager = new GridLayoutManager(getContext(), FIVE_POSTERS_WIDE);
+            } else {
+                mLayoutManager = new GridLayoutManager(getContext(), THREE_POSTERS_WIDE);
+            }
         }
         mRecyclerView.setLayoutManager(mLayoutManager);
 

@@ -25,7 +25,7 @@
     <string name="settings_sort_order">Sort Order</string>
     <string name="settings_sort_order_summary">Top rated or most popular?</string>
     <!--Sort according to popularity by default-->
-    <string name="settings_sort_order_default">0</string>
+    <string name="settings_sort_order_default" translatable="false">0</string>
 
     <!-- - - - - - - - - - - - - - - - - - -->
     <!--     Used in MovieDetailActivity   -->
@@ -37,6 +37,10 @@
     <string name="favorite_this_label">Favorites</string>
     <string name="user_reviews_label_left">(</string>
     <string name="user_reviews_label_right">)</string>
+
+    <string name="snackbar_favorite_added">Added to My Favorites!</string>
+    <string name="snackbar_favorite_removed">Removed from My Favorites!</string>
+    <string name="snackbar_undo_string">Undo</string>
 
 
     <!-- - - - - - - - - - - - - - - - - - -->
@@ -56,6 +60,4 @@
     <string name="test_description">A rogue band of resistance fighters unite for a mission to
     steal the Death Star plans and bring a new hope to the galaxy.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

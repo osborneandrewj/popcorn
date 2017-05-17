@@ -40,12 +40,10 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
 
     private static final String LOG_TAG = DiscoverPopularFragment.class.getSimpleName();
 
-    private static final String DEFAULT_SORT_ORDER = "0";
-    private static final String SORT_BY_POPULARITY = "0";
-    private static final String SORT_BY_TOP_RATED = "1";
-
     private static final int TWO_POSTERS_WIDE = 2;
     private static final int THREE_POSTERS_WIDE = 3;
+    private static final int FOUR_POSTERS_WIDE = 4;
+    private static final int FIVE_POSTERS_WIDE = 5;
 
     private PosterAdapter mPosterAdapter;
     private RecyclerView mRecyclerView;
@@ -60,7 +58,6 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -68,8 +65,6 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
 
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_activity);
-        // Get default search settings
-        PreferenceManager.setDefaultValues(getContext(), R.xml.preferences, false);
 
         // Hide the empty state TextView
         mEmptyStateTextView = (TextView) view.findViewById(R.id.tv_empty_state);
@@ -79,20 +74,31 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
 
         // Use GridLayoutManger to display the grid of movie posters
         // Note: in landscape mode, there will be three columns, not two
+        int screenSize = getContext().getResources().getConfiguration().screenWidthDp;
+        Log.v(LOG_TAG, "screenSize = " + screenSize);
         if (this.getResources().getConfiguration()
                 .orientation == Configuration.ORIENTATION_PORTRAIT) {
-            mLayoutManager = new GridLayoutManager(getContext(), TWO_POSTERS_WIDE);
+            if (screenSize >= 600) {
+                mLayoutManager = new GridLayoutManager(getContext(), THREE_POSTERS_WIDE);
+            } else {
+                mLayoutManager = new GridLayoutManager(getContext(), TWO_POSTERS_WIDE);
+            }
         } else {
-            mLayoutManager = new GridLayoutManager(getContext(), THREE_POSTERS_WIDE);
+            if (screenSize >= 1024) {
+                mLayoutManager = new GridLayoutManager(getContext(), FIVE_POSTERS_WIDE);
+            } else {
+                mLayoutManager = new GridLayoutManager(getContext(), THREE_POSTERS_WIDE);
+            }
         }
         mRecyclerView.setLayoutManager(mLayoutManager);
+
 
         // Specify the adapter with empty ArrayList
         mPosterAdapter = new PosterAdapter(getContext(), new ArrayList<Movie>(), this);
         mRecyclerView.setAdapter(mPosterAdapter);
 
         // Swipe refresh functionality
-        mSwipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -110,7 +116,7 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
     /**
      * Get the movie information from the online database and display it for the user using
      * RecyclerView.
-     *
+     * <p>
      * The switch statement is based on the sort order defined by the user in preferences.
      */
     public void getMovieData() {
@@ -134,7 +140,7 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
                 if (response.body() != null) {
                     List<Movie> movieList = response.body().getResults();
                     mPosterAdapter.setMoviePosterData(movieList);
-                    Log.v(LOG_TAG, "Getting Popular Movies" );
+                    Log.v(LOG_TAG, "Getting Popular Movies");
                     // Success.
                     hideEmptyState();
                     mSwipeRefreshLayout.setRefreshing(false);
@@ -162,7 +168,6 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
         mRecyclerView.setVisibility(View.INVISIBLE);
         mEmptyStateTextView.setVisibility(View.VISIBLE);
     }
-
 
 
     /**
@@ -199,7 +204,7 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
      * activity.
      *
      * @param aDetailTextView The detail button for the corresponding poster.
-     * @param aMovieId The integer ID of the movie that was clicked.
+     * @param aMovieId        The integer ID of the movie that was clicked.
      */
     @Override
     public void onDetailButtonClick(TextView aDetailTextView, int aMovieId) {

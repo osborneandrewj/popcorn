@@ -110,11 +110,9 @@ public class FavoritesProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case FAVORITES:
-                Log.v(LOG_TAG, "Deleting FAVORITES...");
                 return deleteFavoriteMovie(uri, s, strings);
             case FAVORITE_ITEM:
-                Log.v(LOG_TAG, "Deleting FAVORITE_ITEM...");
-                s = FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID + "=?";
+                s = FavoritesContract.FavoritesEntry._ID + "=?";
                 strings = new String[] {String.valueOf(ContentUris.parseId(uri))};
                 return deleteFavoriteMovie(uri, s, strings);
             default:
@@ -149,8 +147,9 @@ public class FavoritesProvider extends ContentProvider {
     private int deleteFavoriteMovie(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase database = mFavoritesDbHelper.getWritableDatabase();
 
-        int numberOfRowsDeleted = database.delete(FavoritesContract.FavoritesEntry.TABLE_NAME,
-                selection,
+        int numberOfRowsDeleted = database.delete(
+                FavoritesContract.FavoritesEntry.TABLE_NAME,
+                selection + "=?",
                 selectionArgs);
 
         getContext().getContentResolver().notifyChange(uri, null);

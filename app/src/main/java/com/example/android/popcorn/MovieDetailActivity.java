@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -42,7 +43,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MovieDetailActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
     private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
     private static final int FAVORITES_LOADER_ID = 1250;
@@ -221,10 +222,7 @@ public class MovieDetailActivity extends AppCompatActivity
             public void onResponse(Call<MovieReviewsWrapper> call, Response<MovieReviewsWrapper> response) {
                 List<MovieReviews> reviews = response.body().getResults();
                 mReviewAdapter.setReviewsData(reviews);
-
                 mUserRatingTotal.setText(String.valueOf(response.body().getTotalResults()));
-                Log.v(LOG_TAG, "Trying to get me some video information! ");
-
             }
 
             @Override
@@ -358,6 +356,10 @@ public class MovieDetailActivity extends AppCompatActivity
                 null);
     }
 
+    /**
+     * Look in the favorites database to see if this movie exists within it. If so, then this
+     * movie is a favorite. Update the favorite star image accordingly.
+     */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         int count = 0;
@@ -370,7 +372,6 @@ public class MovieDetailActivity extends AppCompatActivity
             }
             isThisMovieInFavorites(count);
             updateFavoriteStarImage();
-            Log.v(LOG_TAG, "count = " + count);
         }
     }
 
@@ -391,6 +392,12 @@ public class MovieDetailActivity extends AppCompatActivity
                     FavoritesContract.FavoritesEntry.CONTENT_URI,
                     values);
             updateFavoriteStarImage();
+
+            Snackbar favoriteAddedSnackbar = Snackbar.make(findViewById(R.id.my_coordinator_layout),
+                    R.string.snackbar_favorite_added, Snackbar.LENGTH_SHORT);
+            favoriteAddedSnackbar.setAction(R.string.snackbar_undo_string, this);
+            favoriteAddedSnackbar.show();
+
             return;
         }
 
@@ -401,7 +408,37 @@ public class MovieDetailActivity extends AppCompatActivity
                     FavoritesContract.FavoritesEntry.CONTENT_URI,
                     FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
                     selectionArgs);
-            Log.v(LOG_TAG, "Number of movies deleted; " + numberOfDeletedMovies);
+            updateFavoriteStarImage();
+
+            Snackbar favoriteRemovedSnackbar = Snackbar.make(findViewById(R.id.my_coordinator_layout),
+                    R.string.snackbar_favorite_removed, Snackbar.LENGTH_SHORT);
+            favoriteRemovedSnackbar.setAction(R.string.snackbar_undo_string, this);
+            favoriteRemovedSnackbar.show();
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (!mIsFavorite) {
+            mIsFavorite = true;
+            ContentValues values = new ContentValues();
+            values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, mMovieId);
+            values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_NAME, mMovieTitle);
+            values.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH, mPosterPath);
+            Uri newUri = getContentResolver().insert(
+                    FavoritesContract.FavoritesEntry.CONTENT_URI,
+                    values);
+            updateFavoriteStarImage();
+            return;
+        }
+
+        if (mIsFavorite) {
+            mIsFavorite = false;
+            String[] selectionArgs = {String.valueOf(mMovieId)};
+            int numberOfDeletedMovies = getContentResolver().delete(
+                    FavoritesContract.FavoritesEntry.CONTENT_URI,
+                    FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
+                    selectionArgs);
             updateFavoriteStarImage();
         }
     }

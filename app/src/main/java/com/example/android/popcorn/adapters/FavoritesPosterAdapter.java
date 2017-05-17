@@ -87,10 +87,16 @@ public class FavoritesPosterAdapter extends RecyclerView.Adapter<FavoritesPoster
         // Change the poster size depending on the orientation of the screen
         // Note: this might change depending on landscape version
         int desiredHeight = 0;
+        int screenSize = mContext.getResources().getConfiguration().screenWidthDp;
+        Log.v(LOG_TAG, "screensize: " + screenSize);
         if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             desiredHeight = mViewContainerHeight / 2;
         } else {
-            desiredHeight = mViewContainerHeight;
+            if (screenSize >= 1024) {
+                desiredHeight = mViewContainerHeight / 2;
+            } else {
+                desiredHeight = mViewContainerHeight;
+            }
         }
         viewHolder.mContainer.getLayoutParams().height = desiredHeight;
 
