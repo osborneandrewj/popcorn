@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.android.popcorn.adapters.ReviewAdapter;
@@ -70,6 +72,9 @@ public class MovieDetailActivity extends AppCompatActivity
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private TextView mErrorMessage;
+    private NestedScrollView mNestedScrollView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +111,10 @@ public class MovieDetailActivity extends AppCompatActivity
         mFavoriteButton = (TextView) findViewById(R.id.tv_favorite_label);
         mFavoriteStar = (ImageView) findViewById(R.id.userRatingStar);
 
+        // Empty State
+        mErrorMessage = (TextView) findViewById(R.id.tv_error_message);
+        mNestedScrollView = (NestedScrollView) findViewById(R.id.nested_scroll_view);
+
         if (getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();
             mMovieId = extras.getInt("EXTRA_MOVIE_ID");
@@ -136,6 +145,7 @@ public class MovieDetailActivity extends AppCompatActivity
                 }
             });
             getSupportLoaderManager().initLoader(FAVORITES_LOADER_ID, null, this);
+            hideErrorView();
 
         } else {
             // Something went wrong! The intent did not have any extras so no movie ID
@@ -261,8 +271,14 @@ public class MovieDetailActivity extends AppCompatActivity
 
     }
 
+    private void hideErrorView() {
+        mErrorMessage.setVisibility(View.INVISIBLE);
+        mNestedScrollView.setVisibility(View.VISIBLE);
+    }
+
     private void showErrorView() {
-        // TODO: finish error view
+        mErrorMessage.setVisibility(View.VISIBLE);
+        mNestedScrollView.setVisibility(View.INVISIBLE);
     }
 
     /**

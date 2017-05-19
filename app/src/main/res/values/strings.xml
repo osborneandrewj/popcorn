@@ -48,6 +48,7 @@
     <!-- - - - - - - - - - - - - - - - - - -->
 
     <string name="empty_state_text">Oops, no internet! Check network settings.</string>
+    <string name="detail_activity_error_message">Hmm, well that didn\'t work! Try refreshing.</string>
 
     <!--Error messages-->
     <string name="error_request_queue_init">RequestQueue has not been initialized!</string>

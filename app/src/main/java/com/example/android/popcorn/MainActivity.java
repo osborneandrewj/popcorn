@@ -75,10 +75,6 @@ import retrofit2.Response;
  * *----------------------*----------------------*
  */
 
-
-// TODO: Move all dimensions to dimens.xml
-// TODO: Create a tablet layout
-
 public class MainActivity extends AppCompatActivity {
 
     @Override
