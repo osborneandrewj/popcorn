@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/my_coordinator_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:expanded="false">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimaryDark"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <ImageView
+                android:id="@+id/detail_movie_backdrop"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/detail_backdrop_height_land"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="pin" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:gravity="top"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="0dp">
+
+            <ImageView
+                android:id="@+id/img_poster"
+                android:layout_width="185dp"
+                android:layout_height="278dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintLeft_toLeftOf="@+id/tv_summary"
+                app:layout_constraintTop_toBottomOf="@+id/tv_summary"
+                android:layout_marginLeft="0dp" />
+
+            <TextView
+                android:id="@+id/tv_movie_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/movie_rating_border"
+                android:paddingBottom="0dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="0dp"
+                android:text="R"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="R"
+                android:layout_marginStart="16dp" />
+
+            <TextView
+                android:id="@+id/tv_summary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif"
+                android:paddingEnd="8dp"
+                android:paddingRight="8dp"
+                android:textColor="@color/colorWhiteText"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_movie_rating"
+                tools:text="@string/test_description"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/tv_release_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintLeft_toRightOf="@+id/tv_movie_rating"
+                app:layout_constraintTop_toTopOf="@+id/tv_movie_rating"
+                tools:text="2017"
+                android:layout_marginStart="16dp" />
+
+            <TextView
+                android:id="@+id/tv_runtime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_movie_rating"
+                tools:text="2 hrs 9 mins"
+                android:layout_marginEnd="16dp" />
+
+            <TextView
+                android:id="@+id/tv_trailer_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:background="@color/colorPrimaryDark"
+                android:padding="16dp"
+                android:paddingEnd="24dp"
+                android:paddingStart="24dp"
+                android:text="@string/youtube_trailer_label"
+                app:layout_constraintLeft_toRightOf="@+id/img_poster"
+                app:layout_constraintTop_toTopOf="@+id/img_poster"
+                tools:text="Play Trailer"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="0dp" />
+
+            <TextView
+                android:id="@+id/tv_user_rating_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                tools:text="5.4"
+                app:layout_constraintLeft_toRightOf="@+id/yellowRatingStar"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="0dp"
+                app:layout_constraintTop_toBottomOf="@+id/yellowRatingStar"
+                android:layout_marginBottom="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/yellowRatingStar" />
+
+            <TextView
+                android:id="@+id/tv_reviews_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_reviews_label"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                tools:text="User Reviews"
+                android:layout_marginRight="8dp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_trailer_button"
+                android:layout_marginTop="0dp"
+                app:layout_constraintLeft_toRightOf="@+id/tv_trailer_button"
+                android:layout_marginLeft="8dp" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="0dp"
+                android:text="@string/ratings_label"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:layout_constraintBottom_toTopOf="@+id/tv_user_rating_info"
+                app:layout_constraintLeft_toRightOf="@+id/tv_user_rating_info"
+                app:layout_constraintTop_toBottomOf="@+id/tv_user_rating_info"
+                tools:text=" / 10" />
+
+            <TextView
+                android:id="@+id/tv_ratings_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginTop="4dp"
+                android:textColorLink="@android:color/darker_gray"
+                app:layout_constraintHorizontal_bias="0.514"
+                app:layout_constraintLeft_toLeftOf="@+id/yellowRatingStar"
+                app:layout_constraintRight_toRightOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/tv_user_rating_info"
+                tools:text="11,598)" />
+
+            <ImageView
+                android:id="@+id/yellowRatingStar"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginTop="32dp"
+                app:layout_constraintTop_toBottomOf="@+id/userRatingStar"
+                app:srcCompat="@drawable/rating_star_yellow"
+                app:layout_constraintLeft_toRightOf="@+id/userRatingStar"
+                android:layout_marginLeft="0dp"
+                app:layout_constraintRight_toLeftOf="@+id/userRatingStar"
+                android:layout_marginRight="0dp" />
+
+            <ImageView
+                android:id="@+id/userRatingStar"
+                android:layout_width="30dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="32dp"
+                app:layout_constraintLeft_toLeftOf="@+id/tv_trailer_button"
+                app:layout_constraintTop_toBottomOf="@+id/tv_trailer_button"
+                app:srcCompat="@drawable/rating_star_outline" />
+
+            <TextView
+                android:id="@+id/tv_favorite_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="0dp"
+                android:padding="16dp"
+                android:text="@string/favorite_this_label"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                app:layout_constraintBottom_toTopOf="@+id/userRatingStar"
+                app:layout_constraintLeft_toRightOf="@+id/userRatingStar"
+                app:layout_constraintTop_toBottomOf="@+id/userRatingStar"
+                tools:text="Favorites"
+                app:layout_constraintVertical_bias="0.48" />
+
+            <TextView
+                android:id="@+id/tv_rating_total_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_reviews_label_left"
+                tools:text="("
+                app:layout_constraintRight_toLeftOf="@+id/tv_ratings_total"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/tv_ratings_total"
+                android:layout_marginTop="0dp"
+                app:layout_constraintTop_toBottomOf="@+id/tv_ratings_total" />
+
+            <TextView
+                android:id="@+id/tv_rating_total_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_reviews_label_right"
+                tools:text=")"
+                app:layout_constraintLeft_toRightOf="@+id/tv_ratings_total"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="0dp"
+                app:layout_constraintTop_toBottomOf="@+id/tv_ratings_total"
+                android:layout_marginBottom="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/tv_ratings_total" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview_reviews"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="16dp"
+                android:padding="16dp"
+                app:layout_constraintLeft_toRightOf="@+id/tv_favorite_label"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_reviews_label">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>
