@@ -86,9 +86,13 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdap
         int screenSize = mContext.getResources().getConfiguration().screenWidthDp;
         Log.v(LOG_TAG, "screensize: " + screenSize);
         if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (screenSize >= 600) {
+                desiredHeight = mViewContainerHeight / 3;
+            } else {
                 desiredHeight = mViewContainerHeight / 2;
+            }
         } else {
-            if (screenSize >= 1024) {
+            if (screenSize >= 960) {
                 desiredHeight = mViewContainerHeight / 2;
             } else {
                 desiredHeight = mViewContainerHeight;

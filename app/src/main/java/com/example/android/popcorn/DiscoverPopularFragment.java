@@ -84,7 +84,7 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
                 mLayoutManager = new GridLayoutManager(getContext(), TWO_POSTERS_WIDE);
             }
         } else {
-            if (screenSize >= 1024) {
+            if (screenSize >= 960) {
                 mLayoutManager = new GridLayoutManager(getContext(), FIVE_POSTERS_WIDE);
             } else {
                 mLayoutManager = new GridLayoutManager(getContext(), THREE_POSTERS_WIDE);
