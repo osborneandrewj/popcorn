@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="detail_backdrop_height_port">275dp</dimen>
-    <dimen name="detail_backdrop_height_land">390dp</dimen>
 
     <!-- - - - - - - - - - - - - - - - - - -->
     <!--     Used in activity_main.xml     -->
     <!-- - - - - - - - - - - - - - - - - - -->
     <dimen name="tab_layout_height">35dp</dimen>
+
+    <!-- - - - - - - - - - - - - - - - - - -->
+    <!--     Used in activity_main.xml (sw600dp) -->
+    <!-- - - - - - - - - - - - - - - - - - -->
+    <dimen name="tab_layout_height_sw600dp">75dp</dimen>
 
     <!-- - - - - - - - - - - - - - - - - - -->
     <!--     Used in activity_posters.xml      -->
@@ -34,4 +37,53 @@
     <!-- - - - - - - - - - - - - - - - - - -->
     <!--  Used in activity_movie_details.xml (port) -->
     <!-- - - - - - - - - - - - - - - - - - -->
+    <dimen name="detail_backdrop_height_port">275dp</dimen>
+    <dimen name="detail_backdrop_height_land">390dp</dimen>
+
+    <dimen name="poster_detail_image_height">278dp</dimen>
+    <dimen name="poster_detail_image_width">185dp</dimen>
+    <dimen name="poster_detail_image_marginTop">24dp</dimen>
+
+    <dimen name="movie_rating_marginLeft">16dp</dimen>
+    <dimen name="movie_rating_marginTop">8dp</dimen>
+    <dimen name="movie_rating_paddingLeft">5dp</dimen>
+    <dimen name="movie_rating_paddingRight">5dp</dimen>
+
+    <dimen name="movie_summary_marginLeft">16dp</dimen>
+    <dimen name="movie_summary_marginRight">8dp</dimen>
+    <dimen name="movie_summary_marginTop">8dp</dimen>
+    <dimen name="movie_summary_padding">8dp</dimen>
+    <dimen name="movie_summary_text_size">16sp</dimen>
+
+    <dimen name="release_date_marginStart">16dp</dimen>
+
+    <dimen name="runtime_marginEnd">16dp</dimen>
+
+    <dimen name="trailer_button_margin">8dp</dimen>
+    <dimen name="trailer_button_padding">16dp</dimen>
+    <dimen name="trailer_button_paddingEnd">24dp</dimen>
+
+    <dimen name="user_rating_marginStart">8dp</dimen>
+
+    <dimen name="reviews_label_marginTop">16dp</dimen>
+    <dimen name="reviews_label_marginStart">8dp</dimen>
+    <dimen name="reviews_label_marginEnd">8dp</dimen>
+
+    <dimen name="rating_total_marginStart">8dp</dimen>
+
+    <dimen name="rating_marginTop">4dp</dimen>
+
+    <dimen name="yellow_rating_star_size">26dp</dimen>
+    <dimen name="rating_star_marginTop">32dp</dimen>
+
+    <dimen name="user_rating_star_width">30dp</dimen>
+    <dimen name="user_rating_star_height">50dp</dimen>
+
+    <dimen name="favorite_label_padding">16dp</dimen>
+
+    <dimen name="rating_total_left_parentheses_marginEnd">4dp</dimen>
+
+    <dimen name="rating_total_right_parenteses_marginStart">4dp</dimen>
+
+    <dimen name="recyclerview_reviews_padding">16dp</dimen>
 </resources>

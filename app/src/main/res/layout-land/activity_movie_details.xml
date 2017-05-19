@@ -166,7 +166,7 @@
                 android:layout_marginLeft="8dp" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/rating_total_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="0dp"
@@ -189,7 +189,7 @@
                 android:textColorLink="@android:color/darker_gray"
                 app:layout_constraintHorizontal_bias="0.514"
                 app:layout_constraintLeft_toLeftOf="@+id/yellowRatingStar"
-                app:layout_constraintRight_toRightOf="@+id/textView"
+                app:layout_constraintRight_toRightOf="@+id/rating_total_label"
                 app:layout_constraintTop_toBottomOf="@+id/tv_user_rating_info"
                 tools:text="11,598)" />
 
