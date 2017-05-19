@@ -333,7 +333,9 @@ public class MovieDetailActivity extends AppCompatActivity
         youtubeAddress = youtubeAddress + mYoutubeKey;
 
         Intent launchTrailerIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeAddress));
-        startActivity(launchTrailerIntent);
+        if (launchTrailerIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(launchTrailerIntent);
+        }
     }
 
     private void updateFavoriteStarImage() {
