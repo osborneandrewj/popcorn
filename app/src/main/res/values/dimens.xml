@@ -2,4 +2,36 @@
 <resources>
     <dimen name="detail_backdrop_height_port">275dp</dimen>
     <dimen name="detail_backdrop_height_land">390dp</dimen>
+
+    <!-- - - - - - - - - - - - - - - - - - -->
+    <!--     Used in activity_main.xml     -->
+    <!-- - - - - - - - - - - - - - - - - - -->
+    <dimen name="tab_layout_height">35dp</dimen>
+
+    <!-- - - - - - - - - - - - - - - - - - -->
+    <!--     Used in activity_posters.xml      -->
+    <!-- - - - - - - - - - - - - - - - - - -->
+    <dimen name="empty_state_text_size">16sp</dimen>
+
+    <!-- - - - - - - - - - - - - - - - - - -->
+    <!--     Used in poster_item.xml      -->
+    <!-- - - - - - - - - - - - - - - - - - -->
+    <dimen name="detail_button_height">100dp</dimen>
+    <dimen name="detail_button_text_size">18sp</dimen>
+
+    <!-- - - - - - - - - - - - - - - - - - -->
+    <!--     Used in review_item.xml      -->
+    <!-- - - - - - - - - - - - - - - - - - -->
+    <dimen name="divider_width">395dp</dimen>
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="divider_marginTop">8dp</dimen>
+
+    <dimen name="review_author_paddingTop">8dp</dimen>
+    <dimen name="review_author_marginTop">8dp</dimen>
+
+    <dimen name="review_content_marginTop">8dp</dimen>
+
+    <!-- - - - - - - - - - - - - - - - - - -->
+    <!--  Used in activity_movie_details.xml (port) -->
+    <!-- - - - - - - - - - - - - - - - - - -->
 </resources>

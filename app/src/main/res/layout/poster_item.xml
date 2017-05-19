@@ -17,13 +17,13 @@
     <TextView
         android:id="@+id/detail_text_view"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="@dimen/detail_button_height"
         android:background="@color/colorDetailButtonTransparent"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:text="@string/poster_detail_button"
         android:textColor="@color/colorWhiteText"
-        android:textSize="18sp"
+        android:textSize="@dimen/detail_button_text_size"
         android:visibility="invisible"/>
 
 </RelativeLayout>

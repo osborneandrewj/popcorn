@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="@string/empty_state_text"
-                android:textSize="16sp" />
+                android:textSize="@dimen/empty_state_text_size" />
 
         </RelativeLayout>
 
