@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/divider"
-        android:layout_width="@dimen/divider_width"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/divider_height"
         android:layout_marginLeft="0dp"
         android:layout_marginTop="@dimen/divider_marginTop"

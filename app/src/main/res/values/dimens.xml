@@ -25,7 +25,6 @@
     <!-- - - - - - - - - - - - - - - - - - -->
     <!--     Used in review_item.xml      -->
     <!-- - - - - - - - - - - - - - - - - - -->
-    <dimen name="divider_width">395dp</dimen>
     <dimen name="divider_height">1dp</dimen>
     <dimen name="divider_marginTop">8dp</dimen>
 
@@ -44,13 +43,13 @@
     <dimen name="poster_detail_image_width">185dp</dimen>
     <dimen name="poster_detail_image_marginTop">24dp</dimen>
 
-    <dimen name="movie_rating_marginLeft">16dp</dimen>
+    <dimen name="movie_rating_marginStart">16dp</dimen>
     <dimen name="movie_rating_marginTop">8dp</dimen>
     <dimen name="movie_rating_paddingLeft">5dp</dimen>
     <dimen name="movie_rating_paddingRight">5dp</dimen>
 
-    <dimen name="movie_summary_marginLeft">16dp</dimen>
-    <dimen name="movie_summary_marginRight">8dp</dimen>
+    <dimen name="movie_summary_marginStart">16dp</dimen>
+    <dimen name="movie_summary_marginEnd">8dp</dimen>
     <dimen name="movie_summary_marginTop">8dp</dimen>
     <dimen name="movie_summary_padding">8dp</dimen>
     <dimen name="movie_summary_text_size">16sp</dimen>
@@ -83,7 +82,9 @@
 
     <dimen name="rating_total_left_parentheses_marginEnd">4dp</dimen>
 
-    <dimen name="rating_total_right_parenteses_marginStart">4dp</dimen>
+    <dimen name="rating_total_right_parentheses_marginStart">4dp</dimen>
 
     <dimen name="recyclerview_reviews_padding">16dp</dimen>
+    <dimen name="recyclerview_reviews_marginEnd_land">8dp</dimen>
+    <dimen name="recyclerview_reviews_marginTop_land">16dp</dimen>
 </resources>

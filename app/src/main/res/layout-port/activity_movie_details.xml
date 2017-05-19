@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    android:id="@+id/my_coordinator_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
@@ -54,16 +53,17 @@
                 android:id="@+id/img_poster"
                 android:layout_width="@dimen/poster_detail_image_width"
                 android:layout_height="@dimen/poster_detail_image_height"
+                android:layout_marginLeft="0dp"
                 android:layout_marginTop="@dimen/poster_detail_image_marginTop"
                 app:layout_constraintLeft_toLeftOf="@+id/tv_summary"
-                app:layout_constraintTop_toBottomOf="@+id/tv_summary"
-                android:layout_marginLeft="0dp" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_summary" />
 
             <TextView
                 android:id="@+id/tv_movie_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/movie_rating_marginLeft"
+                android:layout_marginLeft="@dimen/movie_rating_marginStart"
+                android:layout_marginStart="@dimen/movie_rating_marginStart"
                 android:layout_marginTop="@dimen/movie_rating_marginTop"
                 android:background="@drawable/movie_rating_border"
                 android:paddingBottom="0dp"
@@ -73,15 +73,16 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="R"
-                android:layout_marginStart="@dimen/movie_rating_marginLeft" />
+                tools:text="R" />
 
             <TextView
                 android:id="@+id/tv_summary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/movie_summary_marginLeft"
-                android:layout_marginRight="@dimen/movie_summary_marginRight"
+                android:layout_marginEnd="@dimen/movie_summary_marginEnd"
+                android:layout_marginLeft="@dimen/movie_summary_marginStart"
+                android:layout_marginRight="@dimen/movie_summary_marginEnd"
+                android:layout_marginStart="@dimen/movie_summary_marginStart"
                 android:layout_marginTop="@dimen/movie_summary_marginTop"
                 android:fontFamily="sans-serif"
                 android:paddingEnd="@dimen/movie_summary_padding"
@@ -91,36 +92,36 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_movie_rating"
-                tools:text="@string/test_description"
-                android:layout_marginStart="@dimen/movie_summary_marginLeft"
-                android:layout_marginEnd="@dimen/movie_summary_marginRight" />
+                tools:text="@string/test_description" />
 
             <TextView
                 android:id="@+id/tv_release_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/release_date_marginStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintLeft_toRightOf="@+id/tv_movie_rating"
                 app:layout_constraintTop_toTopOf="@+id/tv_movie_rating"
-                tools:text="2017"
-                android:layout_marginStart="@dimen/release_date_marginStart" />
+                tools:text="2017" />
 
             <TextView
                 android:id="@+id/tv_runtime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/runtime_marginEnd"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_movie_rating"
-                tools:text="2 hrs 9 mins"
-                android:layout_marginEnd="@dimen/runtime_marginEnd" />
+                tools:text="2 hrs 9 mins" />
 
             <TextView
                 android:id="@+id/tv_trailer_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/trailer_button_margin"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginStart="@dimen/trailer_button_margin"
                 android:background="@color/colorPrimaryDark"
                 android:padding="@dimen/trailer_button_padding"
                 android:paddingEnd="@dimen/trailer_button_paddingEnd"
@@ -129,36 +130,34 @@
                 app:layout_constraintLeft_toRightOf="@+id/img_poster"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/img_poster"
-                tools:text="Play Trailer"
-                android:layout_marginStart="@dimen/trailer_button_margin"
-                android:layout_marginEnd="@dimen/trailer_button_margin" />
+                tools:text="Play Trailer" />
 
             <TextView
                 android:id="@+id/tv_user_rating_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/user_rating_marginStart"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                tools:text="5.4"
-                app:layout_constraintLeft_toRightOf="@+id/yellowRatingStar"
-                android:layout_marginTop="0dp"
-                app:layout_constraintTop_toBottomOf="@+id/yellowRatingStar"
                 android:layout_marginBottom="0dp"
-                app:layout_constraintBottom_toTopOf="@+id/yellowRatingStar" />
+                android:layout_marginStart="@dimen/user_rating_marginStart"
+                android:layout_marginTop="0dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:layout_constraintBottom_toTopOf="@+id/yellowRatingStar"
+                app:layout_constraintLeft_toRightOf="@+id/yellowRatingStar"
+                app:layout_constraintTop_toBottomOf="@+id/yellowRatingStar"
+                tools:text="5.4" />
 
             <TextView
                 android:id="@+id/tv_reviews_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/reviews_label_marginEnd"
+                android:layout_marginStart="@dimen/reviews_label_marginStart"
                 android:layout_marginTop="@dimen/reviews_label_marginTop"
                 android:text="@string/user_reviews_label"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                app:layout_constraintTop_toBottomOf="@+id/img_poster"
-                tools:text="User Reviews"
-                android:layout_marginStart="@dimen/reviews_label_marginStart"
                 app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginEnd="@dimen/reviews_label_marginEnd"
-                app:layout_constraintRight_toRightOf="parent" />
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img_poster"
+                tools:text="User Reviews" />
 
             <TextView
                 android:id="@+id/rating_total_label"
@@ -191,13 +190,13 @@
                 android:id="@+id/yellowRatingStar"
                 android:layout_width="@dimen/yellow_rating_star_size"
                 android:layout_height="@dimen/yellow_rating_star_size"
-                android:layout_marginTop="@dimen/rating_star_marginTop"
-                app:layout_constraintTop_toBottomOf="@+id/userRatingStar"
-                app:srcCompat="@drawable/rating_star_yellow"
-                app:layout_constraintLeft_toRightOf="@+id/userRatingStar"
                 android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginTop="@dimen/rating_star_marginTop"
+                app:layout_constraintLeft_toRightOf="@+id/userRatingStar"
                 app:layout_constraintRight_toLeftOf="@+id/userRatingStar"
-                android:layout_marginRight="0dp" />
+                app:layout_constraintTop_toBottomOf="@+id/userRatingStar"
+                app:srcCompat="@drawable/rating_star_yellow" />
 
             <ImageView
                 android:id="@+id/userRatingStar"
@@ -228,27 +227,27 @@
                 android:id="@+id/tv_rating_total_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/user_reviews_label_left"
-                tools:text="("
-                app:layout_constraintRight_toLeftOf="@+id/tv_ratings_total"
-                android:layout_marginEnd="@dimen/rating_total_left_parentheses_marginEnd"
                 android:layout_marginBottom="0dp"
-                app:layout_constraintBottom_toTopOf="@+id/tv_ratings_total"
+                android:layout_marginEnd="@dimen/rating_total_left_parentheses_marginEnd"
                 android:layout_marginTop="0dp"
-                app:layout_constraintTop_toBottomOf="@+id/tv_ratings_total" />
+                android:text="@string/user_reviews_label_left"
+                app:layout_constraintBottom_toTopOf="@+id/tv_ratings_total"
+                app:layout_constraintRight_toLeftOf="@+id/tv_ratings_total"
+                app:layout_constraintTop_toBottomOf="@+id/tv_ratings_total"
+                tools:text="(" />
 
             <TextView
                 android:id="@+id/tv_rating_total_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/user_reviews_label_right"
-                tools:text=")"
-                app:layout_constraintLeft_toRightOf="@+id/tv_ratings_total"
-                android:layout_marginStart="@dimen/rating_total_right_parenteses_marginStart"
-                android:layout_marginTop="0dp"
-                app:layout_constraintTop_toBottomOf="@+id/tv_ratings_total"
                 android:layout_marginBottom="0dp"
-                app:layout_constraintBottom_toTopOf="@+id/tv_ratings_total" />
+                android:layout_marginStart="@dimen/rating_total_right_parentheses_marginStart"
+                android:layout_marginTop="0dp"
+                android:text="@string/user_reviews_label_right"
+                app:layout_constraintBottom_toTopOf="@+id/tv_ratings_total"
+                app:layout_constraintLeft_toRightOf="@+id/tv_ratings_total"
+                app:layout_constraintTop_toBottomOf="@+id/tv_ratings_total"
+                tools:text=")" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview_reviews"

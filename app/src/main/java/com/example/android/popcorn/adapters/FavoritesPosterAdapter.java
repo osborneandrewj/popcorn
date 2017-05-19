@@ -89,9 +89,13 @@ public class FavoritesPosterAdapter extends RecyclerView.Adapter<FavoritesPoster
         int desiredHeight = 0;
         int screenSize = mContext.getResources().getConfiguration().screenWidthDp;
         if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            desiredHeight = mViewContainerHeight / 2;
+            if (screenSize >= 600) {
+                desiredHeight = mViewContainerHeight / 3;
+            } else {
+                desiredHeight = mViewContainerHeight / 2;
+            }
         } else {
-            if (screenSize >= 1024) {
+            if (screenSize >= 960) {
                 desiredHeight = mViewContainerHeight / 2;
             } else {
                 desiredHeight = mViewContainerHeight;

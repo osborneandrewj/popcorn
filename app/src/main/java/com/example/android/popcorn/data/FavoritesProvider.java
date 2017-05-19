@@ -20,7 +20,7 @@ public class FavoritesProvider extends ContentProvider {
 
     private static final String LOG_TAG = FavoritesProvider.class.getSimpleName();
 
-    private FavoritesDbHelper mFavoritesDbHelper;
+    private FavoritesDBHelper mFavoritesDbHelper;
     private static final int FAVORITES = 100;
     private static final int FAVORITE_ITEM = 101;
 
@@ -39,7 +39,7 @@ public class FavoritesProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        mFavoritesDbHelper = new FavoritesDbHelper(getContext());
+        mFavoritesDbHelper = new FavoritesDBHelper(getContext());
         return true;
     }
 
