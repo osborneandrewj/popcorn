@@ -77,17 +77,39 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    TabLayout mTabLayout;
+    ViewPager mViewPager;
+    public static String TAB_POSITION = "position";
+    public static String VIEWPAGER_POSITION = "v_position";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
         CustomFragmentPagerAdapter adapter =
                 new CustomFragmentPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
+        mViewPager.setAdapter(adapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.slidingTabs);
-        tabLayout.setupWithViewPager(viewPager);
+        mTabLayout = (TabLayout) findViewById(R.id.slidingTabs);
+        mTabLayout.setupWithViewPager(mViewPager);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(VIEWPAGER_POSITION, mViewPager.getCurrentItem());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mViewPager.setCurrentItem(savedInstanceState.getInt(VIEWPAGER_POSITION));
     }
 }

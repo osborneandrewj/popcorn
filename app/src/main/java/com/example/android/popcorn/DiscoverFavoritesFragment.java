@@ -56,8 +56,6 @@ public class DiscoverFavoritesFragment extends Fragment implements LoaderManager
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_posters, container, false);
 
-        //ListView listView = (ListView)view.findViewById(R.id.list);
-        //empty
         mFavoritesPosterAdapter = new FavoritesPosterAdapter(getContext(), null, this);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_activity);
         // To improve performance...

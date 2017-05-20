@@ -73,7 +73,6 @@ public class DiscoverTopRatedFragment extends Fragment implements PosterAdapter.
         mRecyclerView.setHasFixedSize(true);
 
         // Use GridLayoutManger to display the grid of movie posters
-        // Note: in landscape mode, there will be three columns, not two
         int screenSize = getContext().getResources().getConfiguration().screenWidthDp;
         Log.v(LOG_TAG, "screenSize = " + screenSize);
         if (this.getResources().getConfiguration()

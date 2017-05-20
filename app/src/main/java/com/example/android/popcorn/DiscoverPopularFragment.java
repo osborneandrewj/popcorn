@@ -2,15 +2,14 @@ package com.example.android.popcorn;
 
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +38,9 @@ import retrofit2.Response;
 public class DiscoverPopularFragment extends Fragment implements PosterAdapter.PosterAdapterOnClickHandler {
 
     private static final String LOG_TAG = DiscoverPopularFragment.class.getSimpleName();
-
+    private static final String SCROLL_STATE_KEY = "list_state_key";
+    private static final String OFFSET_KEY = "offset";
+    private static final String STATE_KEY = "state";
     private static final int TWO_POSTERS_WIDE = 2;
     private static final int THREE_POSTERS_WIDE = 3;
     private static final int FOUR_POSTERS_WIDE = 4;
@@ -51,31 +52,29 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
     private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TheMovieDbAPI mService;
+    private int mScrollState;
+    private int mOffset;
+    private Parcelable mState;
 
 
     public DiscoverPopularFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_posters, container, false);
 
-
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_activity);
-
-        // Hide the empty state TextView
-        mEmptyStateTextView = (TextView) view.findViewById(R.id.tv_empty_state);
-
-        // To improve performance...
-        mRecyclerView.setHasFixedSize(true);
-
         // Use GridLayoutManger to display the grid of movie posters
         // Note: in landscape mode, there will be three columns, not two
         int screenSize = getContext().getResources().getConfiguration().screenWidthDp;
-        Log.v(LOG_TAG, "screenSize = " + screenSize);
+        Log.v(LOG_TAG, "screenSize for Popular = " + screenSize);
         if (this.getResources().getConfiguration()
                 .orientation == Configuration.ORIENTATION_PORTRAIT) {
             if (screenSize >= 600) {
@@ -90,6 +89,12 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
                 mLayoutManager = new GridLayoutManager(getContext(), THREE_POSTERS_WIDE);
             }
         }
+
+        // Hide the empty state TextView
+        mEmptyStateTextView = (TextView) view.findViewById(R.id.tv_empty_state);
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_activity);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
 
@@ -109,7 +114,12 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
             }
         });
 
-        getMovieData();
+        if (savedInstanceState != null) {
+            Log.v(LOG_TAG, "savedInstanceState is not null!");
+            mLayoutManager.onRestoreInstanceState(mState);
+        } else {
+            getMovieData();
+        }
         return view;
     }
 
@@ -144,6 +154,7 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
                     // Success.
                     hideEmptyState();
                     mSwipeRefreshLayout.setRefreshing(false);
+
                 } else {
                     Log.v(LOG_TAG, "response is null!");
                     showEmptyState();
@@ -219,5 +230,42 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
         extras.putInt("EXTRA_MOVIE_ID", aMovieId);
         intent.putExtras(extras);
         startActivity(intent);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.v(LOG_TAG, "onSaveInstanceState!");
+
+        //View firstChild = mRecyclerView.getChildAt(0);
+        //mScrollState = mRecyclerView.getChildAdapterPosition(firstChild);
+        //int offset = firstChild.getTop();
+        mState = mLayoutManager.onSaveInstanceState();
+
+        outState.putInt(SCROLL_STATE_KEY, mScrollState);
+        //outState.putInt(OFFSET_KEY, offset);
+        outState.putParcelable(STATE_KEY, mState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        Log.v(LOG_TAG, "onViewStateRestored!");
+        if (savedInstanceState != null) {
+            mState = savedInstanceState.getParcelable(STATE_KEY);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.v(LOG_TAG, "onResume here!");
+    }
+
+    private void resumeScrollPosition(Bundle bundle) {
+//        int position = bundle.getInt(SCROLL_STATE_KEY);
+        mRecyclerView.scrollToPosition(bundle.getInt(SCROLL_STATE_KEY));
+
+        //mRecyclerView.scrollToPosition(position);
     }
 }
