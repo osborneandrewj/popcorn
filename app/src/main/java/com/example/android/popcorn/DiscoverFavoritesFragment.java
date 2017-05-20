@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -32,6 +34,8 @@ public class DiscoverFavoritesFragment extends Fragment implements LoaderManager
     private static final int THREE_POSTERS_WIDE = 3;
     private static final int FOUR_POSTERS_WIDE = 4;
     private static final int FIVE_POSTERS_WIDE = 5;
+    private static final String SCROLL_STATE_KEY = "scroll_state_key";
+
 
     private static final String LOG_TAG = DiscoverFavoritesFragment.class.getSimpleName();
     private FavoritesPosterAdapter mFavoritesPosterAdapter;
@@ -40,6 +44,8 @@ public class DiscoverFavoritesFragment extends Fragment implements LoaderManager
     private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView mEmptyStateTextView;
+    private Parcelable mScrollState;
+
 
 
 
@@ -99,6 +105,7 @@ public class DiscoverFavoritesFragment extends Fragment implements LoaderManager
             }
         });
 
+        resumeScrollPosition();
         return view;
     }
 
@@ -131,6 +138,7 @@ public class DiscoverFavoritesFragment extends Fragment implements LoaderManager
             data.moveToPosition(i);
         }
         mFavoritesPosterAdapter.setMoviePosterData(data);
+        resumeScrollPosition();
     }
 
     @Override
@@ -197,5 +205,26 @@ public class DiscoverFavoritesFragment extends Fragment implements LoaderManager
     private void showEmptyState() {
         mRecyclerView.setVisibility(View.INVISIBLE);
         mEmptyStateTextView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mScrollState = mLayoutManager.onSaveInstanceState();
+        outState.putParcelable(SCROLL_STATE_KEY, mScrollState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            mScrollState = savedInstanceState.getParcelable(SCROLL_STATE_KEY);
+        }
+    }
+
+    private void resumeScrollPosition() {
+        if (mScrollState != null) {
+            mLayoutManager.onRestoreInstanceState(mScrollState);
+        }
     }
 }

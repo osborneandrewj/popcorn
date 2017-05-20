@@ -38,9 +38,7 @@ import retrofit2.Response;
 public class DiscoverPopularFragment extends Fragment implements PosterAdapter.PosterAdapterOnClickHandler {
 
     private static final String LOG_TAG = DiscoverPopularFragment.class.getSimpleName();
-    private static final String SCROLL_STATE_KEY = "list_state_key";
-    private static final String OFFSET_KEY = "offset";
-    private static final String STATE_KEY = "state";
+    private static final String SCROLL_STATE_KEY = "scroll_state_key";
     private static final int TWO_POSTERS_WIDE = 2;
     private static final int THREE_POSTERS_WIDE = 3;
     private static final int FOUR_POSTERS_WIDE = 4;
@@ -52,9 +50,7 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
     private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TheMovieDbAPI mService;
-    private int mScrollState;
-    private int mOffset;
-    private Parcelable mState;
+    private Parcelable mScrollState;
 
 
     public DiscoverPopularFragment() {
@@ -72,7 +68,6 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
         View view = inflater.inflate(R.layout.activity_posters, container, false);
 
         // Use GridLayoutManger to display the grid of movie posters
-        // Note: in landscape mode, there will be three columns, not two
         int screenSize = getContext().getResources().getConfiguration().screenWidthDp;
         Log.v(LOG_TAG, "screenSize for Popular = " + screenSize);
         if (this.getResources().getConfiguration()
@@ -90,7 +85,6 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
             }
         }
 
-        // Hide the empty state TextView
         mEmptyStateTextView = (TextView) view.findViewById(R.id.tv_empty_state);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_activity);
@@ -113,13 +107,8 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
 
             }
         });
-
-        if (savedInstanceState != null) {
-            Log.v(LOG_TAG, "savedInstanceState is not null!");
-            mLayoutManager.onRestoreInstanceState(mState);
-        } else {
-            getMovieData();
-        }
+        getMovieData();
+        resumeScrollPosition();
         return view;
     }
 
@@ -154,6 +143,8 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
                     // Success.
                     hideEmptyState();
                     mSwipeRefreshLayout.setRefreshing(false);
+
+                    resumeScrollPosition();
 
                 } else {
                     Log.v(LOG_TAG, "response is null!");
@@ -235,37 +226,21 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.v(LOG_TAG, "onSaveInstanceState!");
-
-        //View firstChild = mRecyclerView.getChildAt(0);
-        //mScrollState = mRecyclerView.getChildAdapterPosition(firstChild);
-        //int offset = firstChild.getTop();
-        mState = mLayoutManager.onSaveInstanceState();
-
-        outState.putInt(SCROLL_STATE_KEY, mScrollState);
-        //outState.putInt(OFFSET_KEY, offset);
-        outState.putParcelable(STATE_KEY, mState);
+        mScrollState = mLayoutManager.onSaveInstanceState();
+        outState.putParcelable(SCROLL_STATE_KEY, mScrollState);
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        Log.v(LOG_TAG, "onViewStateRestored!");
         if (savedInstanceState != null) {
-            mState = savedInstanceState.getParcelable(STATE_KEY);
+            mScrollState = savedInstanceState.getParcelable(SCROLL_STATE_KEY);
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.v(LOG_TAG, "onResume here!");
-    }
-
-    private void resumeScrollPosition(Bundle bundle) {
-//        int position = bundle.getInt(SCROLL_STATE_KEY);
-        mRecyclerView.scrollToPosition(bundle.getInt(SCROLL_STATE_KEY));
-
-        //mRecyclerView.scrollToPosition(position);
+    private void resumeScrollPosition() {
+        if (mScrollState != null) {
+            mLayoutManager.onRestoreInstanceState(mScrollState);
+        }
     }
 }

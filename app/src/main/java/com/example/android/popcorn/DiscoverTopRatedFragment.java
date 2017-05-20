@@ -4,7 +4,9 @@ package com.example.android.popcorn;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -38,7 +40,7 @@ public class DiscoverTopRatedFragment extends Fragment implements PosterAdapter.
 
 
     private static final String LOG_TAG = DiscoverPopularFragment.class.getSimpleName();
-
+    private static final String SCROLL_STATE_KEY = "scroll_state_key";
     private static final int TWO_POSTERS_WIDE = 2;
     private static final int THREE_POSTERS_WIDE = 3;
     private static final int FOUR_POSTERS_WIDE = 4;
@@ -50,6 +52,8 @@ public class DiscoverTopRatedFragment extends Fragment implements PosterAdapter.
     private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TheMovieDbAPI mService;
+    private Parcelable mScrollState;
+
 
 
     public DiscoverTopRatedFragment() {
@@ -62,15 +66,6 @@ public class DiscoverTopRatedFragment extends Fragment implements PosterAdapter.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_posters, container, false);
-
-
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_activity);
-
-        // Hide the empty state TextView
-        mEmptyStateTextView = (TextView) view.findViewById(R.id.tv_empty_state);
-
-        // To improve performance...
-        mRecyclerView.setHasFixedSize(true);
 
         // Use GridLayoutManger to display the grid of movie posters
         int screenSize = getContext().getResources().getConfiguration().screenWidthDp;
@@ -89,6 +84,11 @@ public class DiscoverTopRatedFragment extends Fragment implements PosterAdapter.
                 mLayoutManager = new GridLayoutManager(getContext(), THREE_POSTERS_WIDE);
             }
         }
+
+        mEmptyStateTextView = (TextView) view.findViewById(R.id.tv_empty_state);
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_activity);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // Specify the adapter with empty ArrayList
@@ -108,6 +108,7 @@ public class DiscoverTopRatedFragment extends Fragment implements PosterAdapter.
         });
 
         getMovieData();
+        resumeScrollPosition();
         return view;
     }
 
@@ -141,6 +142,8 @@ public class DiscoverTopRatedFragment extends Fragment implements PosterAdapter.
                 // Success.
                 hideEmptyState();
                 mSwipeRefreshLayout.setRefreshing(false);
+
+                resumeScrollPosition();
             }
 
             @Override
@@ -211,5 +214,26 @@ public class DiscoverTopRatedFragment extends Fragment implements PosterAdapter.
         extras.putInt("EXTRA_MOVIE_ID", aMovieId);
         intent.putExtras(extras);
         startActivity(intent);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mScrollState = mLayoutManager.onSaveInstanceState();
+        outState.putParcelable(SCROLL_STATE_KEY, mScrollState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            mScrollState = savedInstanceState.getParcelable(SCROLL_STATE_KEY);
+        }
+    }
+
+    private void resumeScrollPosition() {
+        if (mScrollState != null) {
+            mLayoutManager.onRestoreInstanceState(mScrollState);
+        }
     }
 }
