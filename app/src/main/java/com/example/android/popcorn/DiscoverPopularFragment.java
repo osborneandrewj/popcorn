@@ -51,6 +51,7 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TheMovieDbAPI mService;
     private Parcelable mScrollState;
+    private boolean isLoaded = false;
 
 
     public DiscoverPopularFragment() {
@@ -69,7 +70,7 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
 
         // Use GridLayoutManger to display the grid of movie posters
         int screenSize = getContext().getResources().getConfiguration().screenWidthDp;
-        Log.v(LOG_TAG, "screenSize for Popular = " + screenSize);
+        Log.v(LOG_TAG, "sccreenSize for Popular = " + screenSize);
         if (this.getResources().getConfiguration()
                 .orientation == Configuration.ORIENTATION_PORTRAIT) {
             if (screenSize >= 600) {
@@ -107,8 +108,11 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
 
             }
         });
-        getMovieData();
-        resumeScrollPosition();
+        if (isLoaded = true) {
+            resumeScrollPosition();
+        } else {
+            getMovieData();
+        }
         return view;
     }
 
@@ -143,8 +147,7 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
                     // Success.
                     hideEmptyState();
                     mSwipeRefreshLayout.setRefreshing(false);
-
-                    resumeScrollPosition();
+                    isLoaded = true;
 
                 } else {
                     Log.v(LOG_TAG, "response is null!");
@@ -156,6 +159,7 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
             public void onFailure(Call<MoviesResults> call, Throwable t) {
                 Log.e(LOG_TAG, "Something went wrong here..." + t);
                 showEmptyState();
+                isLoaded = false;
             }
         });
 
@@ -241,6 +245,8 @@ public class DiscoverPopularFragment extends Fragment implements PosterAdapter.P
     private void resumeScrollPosition() {
         if (mScrollState != null) {
             mLayoutManager.onRestoreInstanceState(mScrollState);
+            hideEmptyState();
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 }

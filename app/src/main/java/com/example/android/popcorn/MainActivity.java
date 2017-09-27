@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
 
     TabLayout mTabLayout;
     ViewPager mViewPager;
-    public static String TAB_POSITION = "position";
     public static String VIEWPAGER_POSITION = "v_position";
 
     @Override
